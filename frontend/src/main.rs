@@ -7,13 +7,19 @@ use yew_bootstrap::component::form::*;
 use yew_bootstrap::component::*;
 use yew_bootstrap::util::*;
 
-use yew_hooks::{use_map, UseMapHandle};
+use yew_hooks::{use_map, use_title, UseMapHandle};
 
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen_futures::wasm_bindgen::UnwrapThrowExt;
 use web_sys::HtmlInputElement;
+
+#[derive(Deserialize, PartialEq, Clone)]
+struct Info {
+    title: String,
+    questions: Vec<Question>,
+}
 
 #[derive(Deserialize, PartialEq, Clone)]
 struct Question {
@@ -25,7 +31,7 @@ struct Question {
 
 #[derive(Properties, Clone, PartialEq)]
 struct QuestionsListProps {
-    questions: Vec<Question>,
+    questions: UseStateHandle<Vec<Question>>,
     answers: UseMapHandle<usize, String>,
     onchange: Callback<Event>,
 }
@@ -80,13 +86,13 @@ fn questions_list(props: &QuestionsListProps) -> Html {
     }
 }
 
-async fn fetch_questions() -> Result<Vec<Question>, String> {
-    match Request::get("/api/questions").send().await {
-        Ok(response) => match response.json::<Vec<Question>>().await {
-            Ok(fetched_questions) => Ok(fetched_questions),
+async fn get_info() -> Result<Info, String> {
+    match Request::get("/api/info").send().await {
+        Ok(response) => match response.json::<Info>().await {
+            Ok(info) => Ok(info),
             Err(_) => Err("Failed to parse server response.".into()),
         },
-        Err(_) => Err("Failed to fetch questions.".into()),
+        Err(_) => Err("Failed to get page information.".into()),
     }
 }
 
@@ -116,27 +122,31 @@ async fn submit_answers(
 
 #[function_component(App)]
 fn app() -> Html {
+    let header = use_state(String::new);
     let questions = use_state(Vec::new);
     let answers = use_map(HashMap::<usize, String>::new());
     let alert_info = use_state(|| None::<AlertInfo>);
 
     {
+        let header = header.clone();
         let questions = questions.clone();
         let answers = answers.clone();
         let alert_info = alert_info.clone();
 
         use_effect_with((), move |_| {
+            let header = header.clone();
             let questions = questions.clone();
             let answers = answers.clone();
             let alert_info = alert_info.clone();
 
             spawn_local(async move {
-                match fetch_questions().await {
-                    Ok(fetched_questions) => {
-                        fetched_questions.iter().for_each(|question| {
+                match get_info().await {
+                    Ok(info) => {
+                        header.set(info.title);
+                        info.questions.iter().for_each(|question| {
                             answers.insert(question.id, String::new());
                         });
-                        questions.set(fetched_questions);
+                        questions.set(info.questions);
                     }
                     Err(err) => alert_info.set(Some(AlertInfo {
                         color: Color::Danger,
@@ -146,6 +156,8 @@ fn app() -> Html {
             });
         });
     }
+
+    use_title((*header).clone());
 
     let onclick = {
         let answers = answers.clone();
@@ -195,7 +207,7 @@ fn app() -> Html {
                 <Row class="vh-100 align-items-center">
                     <Column md={8} class="mx-auto">
                         <div class="text-center my-4">
-                            <h1 class="mb-4">{"猫咪问答"}</h1>
+                            <h1 class="mb-4">{ (*header).clone() }</h1>
 
                             {
                                 if let Some(info) = (*alert_info).clone() {
@@ -206,7 +218,7 @@ fn app() -> Html {
                             }
 
                             <QuestionsList
-                                questions={ (*questions).clone() }
+                                questions={ questions.clone() }
                                 answers={ answers.clone() }
                                 onchange={ onchange.clone() }
                             />
