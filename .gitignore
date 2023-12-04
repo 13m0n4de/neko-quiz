@@ -2,6 +2,7 @@
 .cargo/
 debug/
 target/
+target-trunk/
 Cargo.lock
 **/*.rs.bk
 
