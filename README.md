@@ -30,4 +30,6 @@ Rust 编写，前端使用 [Yew]() + [Bootstrap]() ，后端使用 [Axum]() ，�
 
 ## 许可证
 
+该项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解更多细节。
+
 ## 相关项目
