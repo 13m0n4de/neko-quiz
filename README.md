@@ -2,9 +2,9 @@
 
 # NekoQuiz
 
-NekoQuiz 是一个 CTF 问答题通用框架，对 USTC Hackergame 猫咪问答 的仿制。
+NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md) 的仿制。
 
-Rust 编写，前端使用 [Yew]() + [Bootstrap]() ，后端使用 [Axum]() ，一键部署。
+Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum) ，一键部署至各比赛平台。
 
 ![](https://img.shields.io/badge/license-MIT-green)
 
