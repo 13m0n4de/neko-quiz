@@ -17,6 +17,9 @@ Rust 编写，前端使用 [Yew]() + [Bootstrap]() ，后端使用 [Axum]() ，�
 
 ## 预览
 
+![demo-1](assets/demo-1.png)
+![demo-2](assets/demo-2.png)
+
 ## 安装
 
 ## 配置
