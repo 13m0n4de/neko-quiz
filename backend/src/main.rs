@@ -5,6 +5,7 @@ use axum::{
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::io::Read;
 use std::sync::OnceLock;
 use std::{fs::File, net::Ipv4Addr, str::FromStr};
 use tokio::net::TcpListener;
@@ -40,9 +41,17 @@ struct Question {
 }
 
 #[derive(Deserialize, Clone)]
+struct Flag {
+    flag_env: String,
+    flag_file: String,
+    flag_static: String,
+}
+
+#[derive(Deserialize, Clone)]
 struct Config {
     title: String,
     questions: Vec<Question>,
+    flag: Flag,
 }
 
 #[derive(Serialize, Clone)]
@@ -74,6 +83,7 @@ struct AnswerResponse {
 
 static INFO: OnceLock<Info> = OnceLock::new();
 static ANSWERS: OnceLock<HashMap<usize, (Vec<String>, u8)>> = OnceLock::new();
+static FLAG: OnceLock<String> = OnceLock::new();
 
 async fn get_info() -> Json<Info> {
     let info = INFO.get().unwrap();
@@ -97,7 +107,7 @@ async fn submit_answers(Json(user_answers): Json<Vec<AnswerRequest>>) -> Json<An
     }
 
     let message = if status {
-        std::env::var("GZCTF_FLAG").unwrap_or("flag{test_flag}".to_string())
+        FLAG.get().unwrap().clone()
     } else {
         "没有全部答对，不能给你 FLAG 哦。".to_string()
     };
@@ -145,6 +155,19 @@ fn init_config(config_path: &str) {
                 answers_map.insert(id + 1, (question.answer, question.points));
             });
         answers_map
+    });
+
+    FLAG.get_or_init(|| {
+        if let Ok(flag) = std::env::var(config.flag.flag_env) {
+            flag
+        } else if let Ok(mut file) = File::open(config.flag.flag_file) {
+            let mut flag = String::new();
+            file.read_to_string(&mut flag)
+                .expect("Unable to read flag file");
+            flag
+        } else {
+            config.flag.flag_static
+        }
     });
 }
 
