@@ -121,7 +121,7 @@ async fn submit_answers(Json(user_answers): Json<Vec<AnswerRequest>>) -> Json<An
     Json(response)
 }
 
-fn init_config(config_path: &str) {
+fn init(config_path: &str) {
     let file = File::open(config_path).expect("Unable to open config file");
     let config: Config = serde_json::from_reader(file).expect("Unable to parse config file");
 
@@ -180,7 +180,7 @@ async fn main() {
     }
     tracing_subscriber::fmt::init();
 
-    init_config(&opt.config);
+    init(&opt.config);
 
     let app = Router::new()
         .nest_service("/", ServeDir::new(&opt.static_dir))
