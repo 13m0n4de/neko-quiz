@@ -60,13 +60,18 @@ fn questions_list(props: &QuestionsListProps) -> Html {
     html! {
         <>
             { for props.questions.iter().map(|question| {
+                let text = Html::from_html_unchecked(AttrValue::from(question.text.clone()));
+                let hint = Html::from_html_unchecked(AttrValue::from(question.hint.clone()));
                 html! {
                     <Card body=true class="mb-4 text-start">
                         <CardText class="mb-1">
-                            { format!("{}. {}", question.id, &question.text) }
-                            <b>{ format!("（{} 分）", &question.points) }</b>
+                            <p>
+                                <span>{ format!("{}. ", &question.id) }</span>
+                                { text }
+                                <b>{ format!("（{} 分）", &question.points) }</b>
+                            </p>
                         </CardText>
-                        <small class="text-muted">{ format!("提示：{}", &question.hint) }</small>
+                        <small class="text-muted">{ "提示：" }{ hint }</small>
                         <FormControl
                             id={ question.id.to_string() }
                             ctype={ FormControlType::Text }
