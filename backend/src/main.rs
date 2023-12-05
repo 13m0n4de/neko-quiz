@@ -112,8 +112,8 @@ async fn submit_answers(Json(user_answers): Json<Vec<AnswerRequest>>) -> Json<An
 }
 
 fn init_config(config_path: &str) {
-    let file = File::open(config_path).expect("Unable to open questions file");
-    let config: Config = serde_json::from_reader(file).expect("Unable to parse questions file");
+    let file = File::open(config_path).expect("Unable to open config file");
+    let config: Config = serde_json::from_reader(file).expect("Unable to parse config file");
 
     INFO.get_or_init(|| {
         let questions = config
