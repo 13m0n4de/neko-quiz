@@ -123,9 +123,9 @@ fn init_config(config_path: &str) {
             .enumerate()
             .map(|(id, question)| QuestionWithoutAnswer {
                 id: id + 1,
-                text: markdown::to_html(&question.text),
+                text: question.text,
                 points: question.points,
-                hint: markdown::to_html(&question.hint),
+                hint: question.hint,
             })
             .collect();
         Info {
