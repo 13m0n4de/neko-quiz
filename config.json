@@ -1,34 +1,34 @@
 {
-  "title": "猫咪问答",
+  "title": "猫咪小测",
   "questions": [
     {
-      "text": "2023 年 11 月，第十四届江苏省大学生机器人大赛在我校成功举办，此次比赛共有多少支代表队参加？",
+      "text": "想要借阅世界图书出版公司出版的《A Classical Introduction To Modern Number Theory 2nd ed.》，应当前往中国科学技术大学西区图书馆的哪一层？",
       "points": 30,
-      "hint": "非负整数，例：100",
-      "answer": []
+      "hint": "是一个非负整数。",
+      "answer": ["12"]
     },
     {
-      "text": "截至 2023-12-01 日，SVUCTF 新生赛 GitHub 仓库中的最后一次提交（commit）的哈希值为？",
+      "text": "今年 arXiv 网站的天体物理版块上有人发表了一篇关于「可观测宇宙中的鸡的密度上限」的论文，请问论文中作者计算出的鸡密度函数的上限为 10 的多少次方每立方秒差距？",
       "points": 30,
-      "hint": "例：c06083e6f712b2ee24b7639a2ba7b2b158b7e157",
-      "answer": []
+      "hint": "是一个非负整数。",
+      "answer": ["23"]
     },
     {
-      "text": "IDA Pro 的图标是哪位女子？",
+      "text": "为了支持 TCP BBR 拥塞控制算法，在<b>编译</b> Linux 内核时应该配置好哪一条内核选项？",
       "points": 20,
-      "hint": "填写完整的本名（简体中文译名），例：爱丽丝·玛格特罗依德",
-      "answer": []
+      "hint": "输入格式为 CONFIG_XXXXX，如 CONFIG_SCHED_SMT。",
+      "answer": ["CONFIG_TCP_CONG_BBR"]
     },
     {
-      "text": "为了将全世界无数物理层网络上的比特流拟人化，<b>RFC</b> 提出了一个 TCP 选项来表达数据包情绪，当向连接的系统发送 RST 数据包时，应该在此选项处填入什么内容？",
+      "text": "🥒🥒🥒：「我……从没觉得写类型标注有意思过」。在一篇论文中，作者给出了能够让 Python 的类型检查器 MyPY mypy 陷入死循环的代码，并证明 Python 的类型检查和停机问题一样困难。请问这篇论文发表在今年的哪个学术会议上？",
       "points": 20,
-      "hint": "表情符号，例：;)",
-      "answer": []
+      "hint": "会议的大写英文简称，比如 ISCA、CCS、ICML。",
+      "answer": ["ECOOP"]
     }
   ],
   "flag": {
-    "flag_env": "GZCTF_FLAG",
+    "flag_env": "FLAG",
     "flag_file": "/flag",
-    "flag_static": "flag{neko_quiz}"
+    "flag_static": "flag{neko_quiz_static_flag}"
   }
 }
