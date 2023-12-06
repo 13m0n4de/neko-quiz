@@ -141,6 +141,25 @@ $ ./prod.sh
 
 会编译 Release 版本并启动。
 
+## 帮助
+
+服务端命令行参数：
+
+```
+$ target/release/backend --help
+backend for neko quiz
+
+Usage: backend [OPTIONS]
+
+Options:
+  -l, --log <LOG_LEVEL>          [default: debug]
+  -a, --addr <ADDR>              [default: localhost]
+  -p, --port <PORT>              [default: 3000]
+  -c, --config <CONFIG>          [default: config.json]
+      --static-dir <STATIC_DIR>  [default: ./dist]
+  -h, --help                     Print help
+```
+
 ## 使用案例
 
 - [SVUCTF/SVUCTF-WINTER-2023 猫娘问答](https://github.com/SVUCTF/SVUCTF-WINTER-2023/tree/main/challenges/misc/neko_quiz)
