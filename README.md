@@ -26,10 +26,15 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 
 ## 部署
 
-## 使用案例
+## 使用案例 
+
+- [SVUCTF/SVUCTF-WINTER-2023 猫娘问答](https://github.com/SVUCTF/SVUCTF-WINTER-2023/tree/main/challenges/misc/neko_quiz)
 
 ## 许可证
 
 该项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解更多细节。
 
 ## 相关项目
+
+- [USTC-Hackergame 猫咪小测](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md)
+- [rksm/axum-yew-setup](https://github.com/rksm/axum-yew-setup/)
