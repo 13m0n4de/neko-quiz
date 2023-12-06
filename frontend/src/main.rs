@@ -64,12 +64,10 @@ fn questions_list(props: &QuestionsListProps) -> Html {
                 let hint = Html::from_html_unchecked(AttrValue::from(question.hint.clone()));
                 html! {
                     <Card body=true class="mb-4 text-start">
-                        <CardText class="mb-1">
-                            <p>
-                                <span>{ format!("{}. ", &question.id) }</span>
-                                { text }
-                                <b>{ format!("（{} 分）", &question.points) }</b>
-                            </p>
+                        <CardText class="mb-0">
+                            <span>{ format!("{}. ", &question.id) }</span>
+                            { text }
+                            <b>{ format!("（{} 分）", &question.points) }</b>
                         </CardText>
                         <small class="text-muted">{ "提示：" }{ hint }</small>
                         <FormControl
