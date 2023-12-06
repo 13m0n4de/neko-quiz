@@ -6,12 +6,14 @@ NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答
 
 Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum) ，一键部署至各比赛平台。
 
-![](https://img.shields.io/badge/license-MIT-green)
+![GitHub License](https://img.shields.io/badge/license-MIT-green)
+![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz)
 
 [预览](#预览) •
 [安装](#安装) •
 [配置](#配置) •
-[部署](#部署)
+[部署](#部署) •
+[帮助](#帮助)
 
 </div>
 
