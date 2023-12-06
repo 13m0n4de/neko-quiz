@@ -1,0 +1,9 @@
+name: neko-quiz
+
+services:
+  neko-quiz:
+    build: .
+    volumes:
+      - ./config.json:/config.json
+    ports:
+      - "3000:3000"
