@@ -115,13 +115,13 @@ $ ./build.sh
 
 确保挂载的配置文件 `config.json` 路径正确。
 
-使用环境变量作为 FLAG：
+使用环境变量作为 Flag：
 
 ```
 $ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -e FLAG='flag{13m0n4de}' --name neko-quiz neko-quiz:latest
 ```
 
-使用文件内容作为 FLAG：
+使用文件内容作为 Flag：
 
 ```
 $ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -v ./flag:/flag --name neko-quiz neko-quiz:latest
