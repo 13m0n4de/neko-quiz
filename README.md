@@ -92,6 +92,10 @@ $ ./build.sh
     "flag_env": "FLAG",
     "flag_file": "/flag",
     "flag_static": "flag{neko_quiz_static_flag}"
+  },
+  "message": {
+    "incorrect": "没有全部答对，不能给你 FLAG 哦。",
+    "correct": "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 $FLAG \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
   }
 }
 ```
@@ -106,6 +110,9 @@ $ ./build.sh
   - `flag_env`：环境变量
   - `flag_file`：文件路径
   - `flag_static`：静态字符串
+- `message`：返回消息，可以使用 HTML 标签
+  - `incorrect`：回答错误时的消息
+  - `correct`：回答正确时的消息，使用 `$FLAG` 占位符表示 Flag 值
 
 ## 部署
 
