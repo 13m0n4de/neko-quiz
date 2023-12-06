@@ -135,11 +135,17 @@ $ docker-compose up
 
 ### 本地部署
 
+编译 Release 版本并启动：
+
 ```
 $ ./prod.sh
 ```
 
-会编译 Release 版本并启动。
+构建本地 Docker 镜像：
+
+```
+$ docker build . -t neko-quiz
+```
 
 ## 帮助
 
