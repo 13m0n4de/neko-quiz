@@ -57,6 +57,56 @@ $ ./build.sh
 
 ## 配置
 
+项目根目录有一份配置示例：[config.json](config.json)
+
+```json
+{
+  "title": "猫咪小测",
+  "questions": [
+    {
+      "text": "想要借阅世界图书出版公司出版的《A Classical Introduction To Modern Number Theory 2nd ed.》，应当前往中国科学技术大学西区图书馆的哪一层？",
+      "points": 30,
+      "hint": "是一个非负整数。",
+      "answer": ["12"]
+    },
+    {
+      "text": "今年 arXiv 网站的天体物理版块上有人发表了一篇关于「可观测宇宙中的鸡的密度上限」的论文，请问论文中作者计算出的鸡密度函数的上限为 10 的多少次方每立方秒差距？",
+      "points": 30,
+      "hint": "是一个非负整数。",
+      "answer": ["23"]
+    },
+    {
+      "text": "为了支持 TCP BBR 拥塞控制算法，在<b>编译</b> Linux 内核时应该配置好哪一条内核选项？",
+      "points": 20,
+      "hint": "输入格式为 CONFIG_XXXXX，如 CONFIG_SCHED_SMT。",
+      "answer": ["CONFIG_TCP_CONG_BBR"]
+    },
+    {
+      "text": "🥒🥒🥒：「我……从没觉得写类型标注有意思过」。在一篇论文中，作者给出了能够让 Python 的类型检查器 MyPY mypy 陷入死循环的代码，并证明 Python 的类型检查和停机问题一样困难。请问这篇论文发表在今年的哪个学术会议上？",
+      "points": 20,
+      "hint": "会议的大写英文简称，比如 ISCA、CCS、ICML。",
+      "answer": ["ECOOP"]
+    }
+  ],
+  "flag": {
+    "flag_env": "FLAG",
+    "flag_file": "/flag",
+    "flag_static": "flag{neko_quiz_static_flag}"
+  }
+}
+```
+
+- `title`：标题
+- `questions`：题目列表，按顺序填写，不限制数量
+  - `text`：正文，可以使用 HTML 标签
+  - `points`：分数（ Flag 不按照分数计算，分数只是显示效果）
+  - `hint`：提示，可以使用 HTML 标签
+  - `answer`：答案，可以配置多个，与任意一个相等即认为回答正确
+- `flag`：Flag 获取方式，默认顺序：环境变量 -> 文件 -> 静态字符串
+  - `flag_env`：环境变量
+  - `flag_file`：文件路径
+  - `flag_static`：静态字符串
+
 ## 部署
 
 ## 使用案例 
