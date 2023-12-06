@@ -48,10 +48,17 @@ struct Flag {
 }
 
 #[derive(Deserialize, Clone)]
+struct Message {
+    incorrect: String,
+    correct: String,
+}
+
+#[derive(Deserialize, Clone)]
 struct Config {
     title: String,
     questions: Vec<Question>,
     flag: Flag,
+    message: Message,
 }
 
 #[derive(Serialize, Clone)]
@@ -84,6 +91,7 @@ struct AnswerResponse {
 static INFO: OnceLock<Info> = OnceLock::new();
 static ANSWERS: OnceLock<HashMap<usize, (Vec<String>, u8)>> = OnceLock::new();
 static FLAG: OnceLock<String> = OnceLock::new();
+static MESSAGE: OnceLock<Message> = OnceLock::new();
 
 async fn get_info() -> Json<Info> {
     let info = INFO.get().unwrap();
@@ -107,9 +115,13 @@ async fn submit_answers(Json(user_answers): Json<Vec<AnswerRequest>>) -> Json<An
     }
 
     let message = if status {
-        FLAG.get().unwrap().clone()
+        MESSAGE
+            .get()
+            .unwrap()
+            .correct
+            .replace("$FLAG", FLAG.get().unwrap())
     } else {
-        "没有全部答对，不能给你 FLAG 哦。".to_string()
+        MESSAGE.get().unwrap().incorrect.clone()
     };
 
     let response = AnswerResponse {
@@ -169,6 +181,8 @@ fn init(config_path: &str) {
             config.flag.flag_static
         }
     });
+
+    MESSAGE.get_or_init(|| config.message);
 }
 
 #[tokio::main]

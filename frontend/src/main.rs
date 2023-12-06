@@ -175,18 +175,19 @@ fn app() -> Html {
             spawn_local(async move {
                 match submit_answers(answers).await {
                     Ok(result) => {
-                        let text = format!("本次测验总得分为 {}。{}", result.score, result.message);
-                        if result.status {
-                            alert_info.set(Some(AlertInfo {
-                                color: Color::Success,
-                                text,
-                            }))
+                        let color = if result.status {
+                            Color::Success
                         } else {
-                            alert_info.set(Some(AlertInfo {
-                                color: Color::Secondary,
-                                text,
-                            }))
-                        }
+                            Color::Secondary
+                        };
+
+                        alert_info.set(Some(AlertInfo {
+                            color,
+                            text: format!(
+                                "本次测验总得分为 {}。<br/>{}",
+                                result.score, result.message
+                            ),
+                        }));
                     }
                     Err(err) => alert_info.set(Some(AlertInfo {
                         color: Color::Danger,
@@ -216,7 +217,8 @@ fn app() -> Html {
 
                             {
                                 if let Some(info) = (*alert_info).clone() {
-                                    html! { <Alert style={info.color} text={info.text} /> }
+                                    let text_vnode = Html::from_html_unchecked(AttrValue::from(info.text));
+                                    html! { <Alert style={info.color} children={text_vnode} /> }
                                 } else {
                                     html! { <></> }
                                 }
