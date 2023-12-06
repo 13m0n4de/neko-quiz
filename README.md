@@ -109,7 +109,39 @@ $ ./build.sh
 
 ## 部署
 
-## 使用案例 
+默认端口为 `3000`
+
+### Docker 镜像
+
+确保挂载的配置文件 `config.json` 路径正确。
+
+使用环境变量作为 FLAG：
+
+```
+$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -e FLAG='flag{13m0n4de}' --name neko-quiz neko-quiz:latest
+```
+
+使用文件内容作为 FLAG：
+
+```
+$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -v ./flag:/flag --name neko-quiz neko-quiz:latest
+```
+
+或者使用 `docker-compose`
+
+```
+$ docker-compose up
+```
+
+### 本地部署
+
+```
+$ ./prod.sh
+```
+
+会编译 Release 版本并启动。
+
+## 使用案例
 
 - [SVUCTF/SVUCTF-WINTER-2023 猫娘问答](https://github.com/SVUCTF/SVUCTF-WINTER-2023/tree/main/challenges/misc/neko_quiz)
 
