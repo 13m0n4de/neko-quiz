@@ -22,6 +22,39 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 
 ## 安装
 
+### 预构建二进制文件
+
+你可以在 [Github release](https://github.com/13m0n4de/neko-quiz/release) 页面找到自动构建的二进制文件，下载对应系统架构的文件解压即可。
+
+### Docker 镜像
+
+```
+$ docker pull https://ghcr.io/13m0n4de/neko-quiz/todo:latest
+```
+
+### 从源文件构建
+
+如果选择从源文件构建，先要确保拥有 Rust 工具链，并安装 [Trunk](https://github.com/thedodd/trunk)：
+
+```
+$ cargo install trunk  # 从源码安装
+$ cargo binstall trunk  # 或使用 cargo-binstall 安装二进制文件
+```
+
+克隆源代码：
+
+```
+$ git clone https://github.com/13m0n4de/neko-quiz/
+```
+
+使用 [build.sh](build.sh) 可以快速编译：
+
+```
+$ ./build.sh
+```
+
+前端文件输出在 `dist/` 后端文件输出在 `target/release/backend`
+
 ## 配置
 
 ## 部署
