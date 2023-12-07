@@ -97,7 +97,7 @@ $ ./build.sh
   },
   "message": {
     "incorrect": "没有全部答对，不能给你 FLAG 哦。",
-    "correct": "\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 $FLAG \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89"
+    "correct": "🎉🎉🎉 $FLAG 🎉🎉🎉"
   }
 }
 ```
