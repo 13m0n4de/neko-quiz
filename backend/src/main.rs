@@ -75,7 +75,7 @@ struct QuestionWithoutAnswer {
     hint: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 struct AnswerRequest {
     id: usize,
     answer: String,
@@ -98,19 +98,22 @@ async fn get_info() -> Json<Info> {
     Json(info.clone())
 }
 
-async fn submit_answers(Json(user_answers): Json<Vec<AnswerRequest>>) -> Json<AnswerResponse> {
+async fn submit_answers(Json(request_answers): Json<Vec<AnswerRequest>>) -> Json<AnswerResponse> {
     let correct_answers = ANSWERS.get().unwrap();
+    let user_answers: HashMap<usize, String> = HashMap::from_iter(
+        request_answers
+            .iter()
+            .cloned()
+            .map(|AnswerRequest { id, answer }| (id, answer)),
+    );
 
     let mut status = true;
     let mut score = 0;
 
-    for user_answer in user_answers {
-        if let Some((correct_answer, points)) = correct_answers.get(&user_answer.id) {
-            if correct_answer.contains(&user_answer.answer) {
-                score += points;
-            } else {
-                status = false;
-            }
+    for (id, (correct_answer, points)) in correct_answers {
+        match user_answers.get(id) {
+            Some(answer) if correct_answer.contains(answer) => score += points,
+            _ => status = false,
         }
     }
 
