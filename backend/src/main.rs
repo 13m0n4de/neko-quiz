@@ -4,9 +4,9 @@ use axum::{
 };
 use clap::Parser;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::io::Read;
 use std::sync::OnceLock;
+use std::{collections::HashMap, usize};
 use std::{fs::File, net::Ipv4Addr, str::FromStr};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
@@ -140,37 +140,25 @@ fn init(config_path: &str) {
     let file = File::open(config_path).expect("Unable to open config file");
     let config: Config = serde_json::from_reader(file).expect("Unable to parse config file");
 
-    INFO.get_or_init(|| {
-        let questions = config
-            .questions
-            .iter()
-            .cloned()
-            .enumerate()
-            .map(|(id, question)| QuestionWithoutAnswer {
-                id: id + 1,
-                text: question.text,
-                points: question.points,
-                hint: question.hint,
-            })
-            .collect();
-        Info {
-            title: config.title,
-            questions,
-        }
+    let mut questions = vec![];
+    let mut answers_map = HashMap::new();
+
+    for (id, question) in config.questions.iter().enumerate() {
+        questions.push(QuestionWithoutAnswer {
+            id: id + 1,
+            text: question.text.clone(),
+            points: question.points.clone(),
+            hint: question.hint.clone(),
+        });
+        answers_map.insert(id + 1, (question.answer.clone(), question.points));
+    }
+
+    INFO.get_or_init(|| Info {
+        title: config.title,
+        questions,
     });
 
-    ANSWERS.get_or_init(|| {
-        let mut answers_map = HashMap::new();
-        config
-            .questions
-            .iter()
-            .cloned()
-            .enumerate()
-            .for_each(|(id, question)| {
-                answers_map.insert(id + 1, (question.answer, question.points));
-            });
-        answers_map
-    });
+    ANSWERS.get_or_init(|| answers_map);
 
     FLAG.get_or_init(|| {
         if let Ok(flag) = std::env::var(config.flag.flag_env) {
