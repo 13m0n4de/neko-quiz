@@ -4,9 +4,9 @@ use axum::{
 };
 use clap::Parser;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::io::Read;
 use std::sync::OnceLock;
-use std::{collections::HashMap, usize};
 use std::{fs::File, net::Ipv4Addr, str::FromStr};
 use tokio::net::TcpListener;
 use tower::ServiceBuilder;
