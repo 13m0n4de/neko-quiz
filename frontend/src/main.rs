@@ -137,11 +137,6 @@ fn app() -> Html {
         let alert_info = alert_info.clone();
 
         use_effect_with((), move |_| {
-            let header = header.clone();
-            let questions = questions.clone();
-            let answers = answers.clone();
-            let alert_info = alert_info.clone();
-
             spawn_local(async move {
                 match get_info().await {
                     Ok(info) => {
@@ -206,7 +201,7 @@ fn app() -> Html {
 
     html! {
         <>
-            { include_cdn() }
+            { include_inline() }
             <Container size={ContainerSize::ExtraSmall}>
                 <Row class="vh-100 align-items-center">
                     <Column md={8} class="mx-auto">
@@ -240,7 +235,6 @@ fn app() -> Html {
                     </Column>
                 </Row>
             </Container>
-            { include_cdn_js() }
         </>
     }
 }
