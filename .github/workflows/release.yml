@@ -28,17 +28,22 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses:  dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          target: ${{ matrix.job.target }}
-          override: true
-          profile: minimal
+          targets: ${{ matrix.job.target }},wasm32-unknown-unknown
 
-      - name: Build
-        shell: bash
+      - name: Install Trunk
+        run: cargo install trunk
+
+      - name: Build frontend
         run: |
-          ./scripts/build.sh ${{ matrix.job.target }}
+          pushd frontend
+          CARGO_TARGET_DIR=../target-trunk trunk build --release --public-url /
+          popd
+
+      - name: Build backend
+        run: cargo build --target ${{ matrix.job.target }} --bin backend --release
 
       - name: Compress
         uses: a7ul/tar-action@v1.1.0
