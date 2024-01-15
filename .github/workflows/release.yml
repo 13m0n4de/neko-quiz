@@ -36,10 +36,9 @@ jobs:
           profile: minimal
 
       - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: ./scripts/build.sh
-          args: ${{ matrix.job.target }}
+        shell: bash
+        run: |
+          ./scripts/build.sh ${{ matrix.job.target }}
 
       - name: Compress
         uses: a7ul/tar-action@v1.1.0
