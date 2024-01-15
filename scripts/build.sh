@@ -10,8 +10,8 @@ CARGO_TARGET_DIR=../target-trunk trunk build --release --public-url /
 popd
 
 if [[ -n "$TARGET" ]]; then
-    cargo build --target "$TARGET" --bin backend --release
+    cargo build --target "$TARGET" --bin server --release
 else
-    cargo build --bin backend --release
+    cargo build --bin server --release
 fi
 

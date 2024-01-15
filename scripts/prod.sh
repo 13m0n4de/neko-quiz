@@ -6,4 +6,4 @@ pushd frontend
 CARGO_TARGET_DIR=../target-trunk trunk build --release --public-url /
 popd
 
-cargo run --bin backend --release
+cargo run --bin server --release

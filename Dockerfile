@@ -15,8 +15,8 @@ RUN ./scripts/build.sh x86_64-unknown-linux-musl
 FROM scratch
 
 COPY --from=builder /app/dist/ /dist
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/backend /neko-quiz-server
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/server /neko-quiz
 
-ENTRYPOINT ["/neko-quiz-server"]
+ENTRYPOINT ["/neko-quiz"]
 
 CMD ["-a", "0.0.0.0"]

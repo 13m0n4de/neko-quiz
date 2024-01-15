@@ -2,8 +2,12 @@
 resolver = "2"
 members = [
     "frontend",
-    "backend"
+    "server/api",
+    "server/shuttle", "server/standalone",
 ]
 
 [profile.release]
 strip = true
+
+[workspace.dependencies]
+api = { version = "0.1.0", path = "./server/api"}
