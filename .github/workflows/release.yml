@@ -42,7 +42,7 @@ jobs:
       - name: Build frontend
         run: |
           pushd frontend
-          trunk build --release --public-url /
+          trunk build --release
           popd
 
       - name: Build server
@@ -65,7 +65,7 @@ jobs:
           cwd: .
           files: |
             dist/
-            neko-quiz-server${{ matrix.job.extension }}
+            neko-quiz${{ matrix.job.extension }}
             config.json
           outPath: ${{ matrix.job.target }}.tar.gz
 
