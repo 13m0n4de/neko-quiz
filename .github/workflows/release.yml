@@ -42,7 +42,7 @@ jobs:
       - name: Build frontend
         run: |
           pushd frontend
-          CARGO_TARGET_DIR=../target-trunk trunk build --release --public-url /
+          trunk build --release --public-url /
           popd
 
       - name: Build backend
@@ -53,6 +53,11 @@ jobs:
           use-cross: ${{ matrix.job.use-cross }}
           cross-version: 0.2.5
 
+      - name: Rename artifacts
+        shell: bash
+        run: |
+          mv target/${{ matrix.job.target }}/release/backend${{ matrix.job.extension }} neko-quiz-server${{ matrix.job.extension }}
+
       - name: Compress
         uses: a7ul/tar-action@v1.1.0
         with:
@@ -60,7 +65,8 @@ jobs:
           cwd: .
           files: |
             dist/
-            target/${{ matrix.job.target }}/release/backend${{ matrix.job.extension }}
+            neko-quiz-server${{ matrix.job.extension }}
+            config.json
           outPath: ${{ matrix.job.target }}.tar.gz
 
       - name: Release
