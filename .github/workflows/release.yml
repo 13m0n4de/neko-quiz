@@ -57,4 +57,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            ${{ matrix/job.target }}.tar.gz
+            ${{ matrix.job.target }}.tar.gz
