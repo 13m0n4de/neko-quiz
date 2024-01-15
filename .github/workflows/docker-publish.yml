@@ -11,6 +11,10 @@ on:
     branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+    paths:
+      - "backend/**"
+      - "frondend/**"
+      - "Dockerfile"
   pull_request:
     branches: [ "main" ]
 
