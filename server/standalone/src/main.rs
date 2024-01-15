@@ -4,7 +4,7 @@ use std::{net::Ipv4Addr, str::FromStr};
 use tokio::net::TcpListener;
 
 #[derive(Parser, Debug)]
-#[clap(name = "neko-quiz-backend", about = "backend for neko quiz")]
+#[clap(name = "neko-quiz")]
 struct Opt {
     #[clap(short = 'l', long = "log", default_value = "debug")]
     log_level: String,
