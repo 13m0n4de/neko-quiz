@@ -6,8 +6,8 @@ NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答
 
 Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum) ，一键部署至各比赛平台。
 
-![GitHub License](https://img.shields.io/badge/license-MIT-green)
-![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz)
+![GitHub License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz?style=for-the-badge)
 
 [预览](#预览) •
 [安装](#安装) •
@@ -18,6 +18,8 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 </div>
 
 ## 预览
+
+在线预览：[https://neko-quiz.shuttleapp.rs/](https://neko-quiz.shuttleapp.rs/)
 
 ![demo-1](assets/demo-1.png)
 ![demo-2](assets/demo-2.png)
@@ -122,12 +124,12 @@ $ ./build.sh
 
 ### 使用预构建二进制文件
 
-如果从是 [Releases](https://github.com/13m0n4de/neko-quiz/releases) 下载的压缩包，解压所有文件到同一目录并运行 `neko-quiz-server` 即可。
+如果从是 [Releases](https://github.com/13m0n4de/neko-quiz/releases) 下载的压缩包，解压所有文件到同一目录并运行 `neko-quiz` 即可。
 
 ```
 $ tar xvf x86_64-unknown-linux-musl.tar.gz
-$ ./neko-quiz-server
-$ ./neko-quiz-server -a 0.0.0.0 -p 8080
+$ ./neko-quiz
+$ ./neko-quiz -a 0.0.0.0 -p 8080
 ```
 
 更多参数参考[帮助](#帮助)。
@@ -173,10 +175,8 @@ $ docker build . -t neko-quiz
 命令行参数：
 
 ```
-$ neko-quiz-server --help
-backend for neko quiz
-
-Usage: neko-quiz-server [OPTIONS]
+$ neko-quiz --help
+Usage: neko-quiz [OPTIONS]
 
 Options:
   -l, --log <LOG_LEVEL>          [default: debug]
