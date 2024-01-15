@@ -1,0 +1,60 @@
+name: Release
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - { os: ubuntu-latest  , target: x86_64-unknown-linux-gnu       , extension: ""   }
+          - { os: ubuntu-latest  , target: x86_64-unknown-linux-musl      , extension: ""   }
+          - { os: ubuntu-latest  , target: armv7-unknown-linux-gnueabihf  , extension: ""   }
+          - { os: ubuntu-latest  , target: armv7-unknown-linux-musleabihf , extension: ""   }
+          - { os: ubuntu-latest  , target: aarch64-unknown-linux-gnu      , extension: ""   }
+          - { os: ubuntu-latest  , target: aarch64-unknown-linux-musl     , extension: ""   }
+          - { os: macos-latest   , target: x86_64-apple-darwin            , extension: ""   }
+          - { os: macos-latest   , target: aarch64-apple-darwin           , extension: ""   }
+          - { os: windows-latest , target: x86_64-pc-windows-msvc         , extension: .exe }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.job.target }}
+          override: true
+          profile: minimal
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: ./scripts/build.sh
+          args: ${{ matrix.job.target }}
+
+      - name: Compress
+        uses: a7ul/tar-action@v1.1.0
+        with:
+          command: c
+          cwd: .
+          files: |
+            dist/
+            target/${{ matrix.job.target }}/release/backend${{ matrix.job.extension }}}
+          outPath: ${{ matrix.job.target }}.tar.gz
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            ${{ matrix/job.target }}.tar.gz
