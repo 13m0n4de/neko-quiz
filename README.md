@@ -26,17 +26,17 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 
 ### 预构建二进制文件
 
-你可以在 [Github release](https://github.com/13m0n4de/neko-quiz/release) 页面找到自动构建的二进制文件，下载对应系统架构的文件解压即可。
+你可以在 [Releases](https://github.com/13m0n4de/neko-quiz/releases) 页面找到自动构建的二进制文件，下载对应系统架构的文件解压即可。
 
 ### Docker 镜像
 
 ```
-$ docker pull https://ghcr.io/13m0n4de/neko-quiz/todo:latest
+$ docker pull ghcr.io/13m0n4de/neko-quiz:main
 ```
 
-### 从源文件构建
+### 从源文件安装
 
-如果选择从源文件构建，先要确保拥有 Rust 工具链，并安装 [Trunk](https://github.com/thedodd/trunk)：
+如果选择从源文件安装，先要确保拥有 Rust 工具链，并安装 [Trunk](https://github.com/thedodd/trunk)：
 
 ```
 $ cargo install trunk  # 从源码安装
@@ -120,6 +120,18 @@ $ ./build.sh
 
 默认端口为 `3000`
 
+### 使用预构建二进制文件
+
+如果从是 [Releases](https://github.com/13m0n4de/neko-quiz/releases) 下载的压缩包，解压所有文件到同一目录并运行 `neko-quiz-server` 即可。
+
+```
+$ tar xvf x86_64-unknown-linux-musl.tar.gz
+$ ./neko-quiz-server
+$ ./neko-quiz-server -a 0.0.0.0 -p 8080
+```
+
+更多参数参考[帮助](#帮助)。
+
 ### Docker 镜像
 
 确保挂载的配置文件 `config.json` 路径正确。
@@ -127,19 +139,19 @@ $ ./build.sh
 使用环境变量作为 Flag：
 
 ```
-$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -e FLAG='flag{13m0n4de}' --name neko-quiz neko-quiz:latest
+$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -e FLAG='flag{13m0n4de}' --name neko-quiz neko-quiz
 ```
 
 使用文件内容作为 Flag：
 
 ```
-$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -v ./flag:/flag --name neko-quiz neko-quiz:latest
+$ docker run -d --rm -p 3000:3000 -v ./config.json:/config.json -v ./flag:/flag --name neko-quiz neko-quiz
 ```
 
-或者使用 `docker-compose`
+当然也可以使用 `docker-compose`，在 [docker-compose.yml](./docker-compose.yml) 中配置文件挂载和环境变量
 
 ```
-$ docker-compose up
+$ docker-compose up -d
 ```
 
 ### 本地部署
@@ -158,13 +170,13 @@ $ docker build . -t neko-quiz
 
 ## 帮助
 
-服务端命令行参数：
+命令行参数：
 
 ```
-$ target/release/backend --help
+$ neko-quiz-server --help
 backend for neko quiz
 
-Usage: backend [OPTIONS]
+Usage: neko-quiz-server [OPTIONS]
 
 Options:
   -l, --log <LOG_LEVEL>          [default: debug]
