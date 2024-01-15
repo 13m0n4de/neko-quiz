@@ -5,5 +5,8 @@ services:
     build: .
     volumes:
       - ./config.json:/config.json
+      # - ./flag:/flag
+    # environment:
+      # - FLAG=flag{13m0n4de}
     ports:
       - "3000:3000"
