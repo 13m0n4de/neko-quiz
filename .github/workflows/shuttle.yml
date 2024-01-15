@@ -28,7 +28,7 @@ jobs:
       - name: Build frontend
         run: |
           pushd frontend
-          trunk build --release --public-url /
+          trunk build --release -d ../shuttle-dist/
           popd
 
       - uses: shuttle-hq/deploy-action@main
