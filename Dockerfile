@@ -10,9 +10,7 @@ RUN apt-get update && \
     rustup target add x86_64-unknown-linux-musl && \
     cargo install trunk
 
-RUN cd frontend && CARGO_TARGET_DIR=../target-trunk trunk build --release --public-url / && \
-    cd .. && \
-    cd backend && cargo build --bin backend --release --target x86_64-unknown-linux-musl
+RUN ./scripts/build.sh x86_64-unknown-linux-musl
 
 FROM scratch
 
