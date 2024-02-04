@@ -3,8 +3,7 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::fs::File;
+use std::{collections::HashMap, fs, fs::File, path::Path};
 use tower::ServiceBuilder;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 
@@ -118,8 +117,9 @@ pub async fn submit_answers(
 }
 
 fn init(config_path: &str) {
-    let file = File::open(config_path).expect("Unable to open config file");
-    let config: Config = serde_json::from_reader(file).expect("Unable to parse config file");
+    let config_str =
+        fs::read_to_string(Path::new(config_path)).expect("Unable to read config file");
+    let config: Config = toml::from_str(&config_str).expect("Unable to parse config file");
 
     let mut questions = vec![];
     let mut answers_map = HashMap::new();

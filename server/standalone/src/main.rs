@@ -15,7 +15,7 @@ struct Opt {
     #[clap(short = 'p', long = "port", default_value = "3000")]
     port: u16,
 
-    #[clap(short = 'c', long = "config", default_value = "config.json")]
+    #[clap(short = 'c', long = "config", default_value = "config.toml")]
     config: String,
 
     #[clap(long = "static-dir", default_value = "./dist")]
