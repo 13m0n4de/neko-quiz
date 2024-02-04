@@ -4,7 +4,7 @@ services:
   neko-quiz:
     build: .
     volumes:
-      - ./config.json:/config.json
+      - ./config.toml:/config.toml
       # - ./flag:/flag
     # environment:
       # - FLAG=flag{13m0n4de}
