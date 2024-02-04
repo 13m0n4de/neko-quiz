@@ -66,7 +66,7 @@ jobs:
           files: |
             dist/
             neko-quiz${{ matrix.job.extension }}
-            config.json
+            config.toml
           outPath: ${{ matrix.job.target }}.tar.gz
 
       - name: Release
