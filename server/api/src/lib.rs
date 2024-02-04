@@ -3,7 +3,7 @@ use axum::{
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, fs, fs::File, path::Path};
+use std::{collections::HashMap, fs::File};
 use tower::ServiceBuilder;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 
@@ -32,7 +32,7 @@ struct Message {
 }
 
 #[derive(Deserialize, Clone)]
-struct Config {
+pub struct Config {
     title: String,
     questions: Vec<Question>,
     flag: Flag,
@@ -116,11 +116,7 @@ pub async fn submit_answers(
     Json(response)
 }
 
-fn init(config_path: &str) {
-    let config_str =
-        fs::read_to_string(Path::new(config_path)).expect("Unable to read config file");
-    let config: Config = toml::from_str(&config_str).expect("Unable to parse config file");
-
+fn init(config: Config) {
     let mut questions = vec![];
     let mut answers_map = HashMap::new();
 
@@ -157,8 +153,8 @@ fn init(config_path: &str) {
     MESSAGE.get_or_init(|| config.message);
 }
 
-pub fn build_router(config_path: &str, serve_dir: &str) -> Router {
-    init(config_path);
+pub fn build_router(config: Config, serve_dir: &str) -> Router {
+    init(config);
 
     Router::new()
         .nest_service("/", ServeDir::new(serve_dir))
