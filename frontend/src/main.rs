@@ -88,13 +88,15 @@ fn questions_list(props: &QuestionsListProps) -> Html {
 }
 
 async fn get_info() -> Result<Info, String> {
-    match Request::get("/api/info").send().await {
-        Ok(response) => match response.json::<Info>().await {
-            Ok(info) => Ok(info),
-            Err(_) => Err("Failed to parse server response.".into()),
-        },
-        Err(_) => Err("Failed to get page information.".into()),
-    }
+    let response = Request::get("/api/info")
+        .send()
+        .await
+        .map_err(|_| "Failed to get page information.")?;
+
+    response
+        .json::<Info>()
+        .await
+        .map_err(|_| "Failed to parse server response.".to_string())
 }
 
 async fn submit_answers(
@@ -109,16 +111,16 @@ async fn submit_answers(
         })
         .collect();
 
-    match Request::post("/api/answers").json(&answers_data) {
-        Ok(request) => match request.send().await {
-            Ok(response) => match response.json::<AnswersResponse>().await {
-                Ok(result) => Ok(result),
-                Err(_) => Err("Failed to parse server response.".into()),
-            },
-            Err(_) => Err("Failed to send answer.".into()),
-        },
-        Err(_) => Err("Failed to serialize JSON.".into()),
-    }
+    let request = Request::post("/api/answers")
+        .json(&answers_data)
+        .map_err(|_| "Failed to serialize JSON.")?;
+
+    let response = request.send().await.map_err(|_| "Failed to send answer.")?;
+
+    response
+        .json::<AnswersResponse>()
+        .await
+        .map_err(|_| "Failed to parse server response.".to_string())
 }
 
 #[function_component(App)]
