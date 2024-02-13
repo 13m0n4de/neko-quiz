@@ -40,47 +40,45 @@ pub struct Config {
 }
 
 #[derive(Serialize, Clone)]
-pub struct Info {
+struct Info {
     title: String,
     questions: Vec<QuestionWithoutAnswer>,
 }
 
 #[derive(Serialize, Clone)]
 struct QuestionWithoutAnswer {
-    id: usize,
+    id: String,
     text: String,
     points: u8,
     hint: String,
 }
 
 #[derive(Deserialize, Clone)]
-pub struct AnswerRequest {
-    id: usize,
+struct AnswerRequest {
+    id: String,
     answer: String,
 }
 
 #[derive(Serialize)]
-pub struct AnswerResponse {
+struct AnswerResponse {
     status: bool,
     score: u8,
     message: String,
 }
 
 static INFO: OnceLock<Info> = OnceLock::new();
-static ANSWERS: OnceLock<HashMap<usize, (Vec<String>, u8)>> = OnceLock::new();
+static ANSWERS: OnceLock<HashMap<String, (Vec<String>, u8)>> = OnceLock::new();
 static FLAG: OnceLock<String> = OnceLock::new();
 static MESSAGE: OnceLock<Message> = OnceLock::new();
 
-pub async fn get_info() -> Json<Info> {
+async fn get_info() -> Json<Info> {
     let info = INFO.get().unwrap();
     Json(info.clone())
 }
 
-pub async fn submit_answers(
-    Json(request_answers): Json<Vec<AnswerRequest>>,
-) -> Json<AnswerResponse> {
+async fn submit_answers(Json(request_answers): Json<Vec<AnswerRequest>>) -> Json<AnswerResponse> {
     let correct_answers = ANSWERS.get().unwrap();
-    let user_answers: HashMap<usize, String> = HashMap::from_iter(
+    let user_answers: HashMap<String, String> = HashMap::from_iter(
         request_answers
             .iter()
             .cloned()
@@ -120,14 +118,15 @@ fn init(config: Config) {
     let mut questions = vec![];
     let mut answers_map = HashMap::new();
 
-    for (id, question) in config.questions.iter().enumerate() {
+    for (idx, question) in config.questions.iter().enumerate() {
+        let question_id = format!("q{}", idx + 1);
         questions.push(QuestionWithoutAnswer {
-            id: id + 1,
+            id: question_id.clone(),
             text: question.text.clone(),
             points: question.points,
             hint: question.hint.clone(),
         });
-        answers_map.insert(id + 1, (question.answer.clone(), question.points));
+        answers_map.insert(question_id, (question.answer.clone(), question.points));
     }
 
     INFO.get_or_init(|| Info {

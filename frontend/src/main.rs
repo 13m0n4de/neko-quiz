@@ -13,7 +13,6 @@ use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen_futures::spawn_local;
-use wasm_bindgen_futures::wasm_bindgen::UnwrapThrowExt;
 use web_sys::HtmlInputElement;
 
 #[derive(Deserialize, PartialEq, Clone)]
@@ -24,7 +23,7 @@ struct Info {
 
 #[derive(Deserialize, PartialEq, Clone)]
 struct Question {
-    id: usize,
+    id: String,
     text: String,
     points: u32,
     hint: String,
@@ -44,7 +43,7 @@ struct AlertInfo {
 
 #[derive(Serialize)]
 struct Answer {
-    id: usize,
+    id: String,
     answer: String,
 }
 
@@ -59,8 +58,8 @@ struct AnswersResponse {
 fn questions_list(props: &QuestionsListProps) -> Html {
     html! {
         <>
-            { for props.questions.iter().map(|question| {
-                let stored_answer: String = LocalStorage::get(question.id.to_string()).unwrap_or_default();
+            { for props.questions.iter().enumerate().map(|(idx, question)| {
+                let stored_answer: String = LocalStorage::get(&question.id).unwrap_or_default();
 
                 let text = Html::from_html_unchecked(AttrValue::from(question.text.clone()));
                 let hint = Html::from_html_unchecked(AttrValue::from(question.hint.clone()));
@@ -68,13 +67,13 @@ fn questions_list(props: &QuestionsListProps) -> Html {
                 html! {
                     <Card body=true class="mb-4 text-start">
                         <CardText class="mb-0">
-                            <span>{ format!("{}. ", &question.id) }</span>
+                            <span>{ format!("{}. ", idx + 1) }</span>
                             { text }
                             <b>{ format!("（{} 分）", &question.points) }</b>
                         </CardText>
                         <small class="text-muted">{ "提示：" }{ hint }</small>
                         <FormControl
-                            id={ question.id.to_string() }
+                            id={ question.id.clone() }
                             ctype={ FormControlType::Text }
                             class="my-2"
                             value={stored_answer}
@@ -100,13 +99,13 @@ async fn get_info() -> Result<Info, String> {
 }
 
 async fn submit_answers(
-    answers_map: UseMapHandle<usize, String>,
+    answers_map: UseMapHandle<String, String>,
 ) -> Result<AnswersResponse, String> {
     let answers_data: Vec<Answer> = answers_map
         .current()
         .iter()
-        .map(|(&id, answer)| Answer {
-            id,
+        .map(|(id, answer)| Answer {
+            id: id.clone(),
             answer: answer.clone(),
         })
         .collect();
@@ -127,7 +126,7 @@ async fn submit_answers(
 fn app() -> Html {
     let header = use_state(String::new);
     let questions = use_state(Vec::new);
-    let answers = use_map(HashMap::<usize, String>::new());
+    let answers = use_map(HashMap::<String, String>::new());
     let alert_info = use_state(|| None::<AlertInfo>);
 
     {
@@ -194,7 +193,7 @@ fn app() -> Html {
         let answers = answers.clone();
         Callback::from(move |event: InputEvent| {
             let target: HtmlInputElement = event.target_unchecked_into();
-            answers.insert(target.id().parse().unwrap_throw(), target.value());
+            answers.insert(target.id(), target.value());
             LocalStorage::set(target.id(), target.value()).unwrap_or_default();
         })
     };
