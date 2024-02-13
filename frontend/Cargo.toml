@@ -8,8 +8,9 @@ edition = "2021"
 [dependencies]
 yew = { version = "0.21.0", features = ["csr"] }
 yew-hooks = "0.3.0"
-yew-bootstrap = "0.8"
+yew-bootstrap = "0.10.0"
 gloo-net = "0.4.0"
+gloo-storage = "0.3.0"
 serde = { version = "1.0", features = ["derive"] }
 wasm-bindgen-futures = "0.4"
 web-sys = "0.3.65"

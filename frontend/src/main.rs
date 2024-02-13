@@ -10,6 +10,7 @@ use yew_bootstrap::util::*;
 use yew_hooks::{use_map, use_title, UseMapHandle};
 
 use gloo_net::http::Request;
+use gloo_storage::{LocalStorage, Storage};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen_futures::spawn_local;
 use wasm_bindgen_futures::wasm_bindgen::UnwrapThrowExt;
@@ -32,8 +33,7 @@ struct Question {
 #[derive(Properties, Clone, PartialEq)]
 struct QuestionsListProps {
     questions: UseStateHandle<Vec<Question>>,
-    answers: UseMapHandle<usize, String>,
-    onchange: Callback<Event>,
+    oninput: Callback<InputEvent>,
 }
 
 #[derive(Clone)]
@@ -60,8 +60,11 @@ fn questions_list(props: &QuestionsListProps) -> Html {
     html! {
         <>
             { for props.questions.iter().map(|question| {
+                let stored_answer: String = LocalStorage::get(question.id.to_string()).unwrap_or_default();
+
                 let text = Html::from_html_unchecked(AttrValue::from(question.text.clone()));
                 let hint = Html::from_html_unchecked(AttrValue::from(question.hint.clone()));
+
                 html! {
                     <Card body=true class="mb-4 text-start">
                         <CardText class="mb-0">
@@ -74,13 +77,8 @@ fn questions_list(props: &QuestionsListProps) -> Html {
                             id={ question.id.to_string() }
                             ctype={ FormControlType::Text }
                             class="my-2"
-                            onchange={ props.onchange.clone() }
-                            value={
-                                props.answers.current()
-                                    .get(&question.id)
-                                    .cloned()
-                                    .unwrap_or_default()
-                            }
+                            value={stored_answer}
+                            oninput={ props.oninput.clone() }
                         />
                     </Card>
                 }
@@ -137,13 +135,12 @@ fn app() -> Html {
         let alert_info = alert_info.clone();
 
         use_effect_with((), move |_| {
+            answers.set(LocalStorage::get_all().unwrap_or_default());
+
             spawn_local(async move {
                 match get_info().await {
                     Ok(info) => {
                         header.set(info.title);
-                        info.questions.iter().for_each(|question| {
-                            answers.insert(question.id, String::new());
-                        });
                         questions.set(info.questions);
                     }
                     Err(err) => alert_info.set(Some(AlertInfo {
@@ -191,17 +188,18 @@ fn app() -> Html {
         })
     };
 
-    let onchange = {
+    let oninput = {
         let answers = answers.clone();
-        Callback::from(move |event: Event| {
+        Callback::from(move |event: InputEvent| {
             let target: HtmlInputElement = event.target_unchecked_into();
-            answers.update(&target.id().parse().unwrap_throw(), target.value());
+            answers.insert(target.id().parse().unwrap_throw(), target.value());
+            LocalStorage::set(target.id(), target.value()).unwrap_or_default();
         })
     };
 
     html! {
         <>
-            { include_inline() }
+            { include_cdn() }
             <Container size={ContainerSize::ExtraSmall}>
                 <Row class="vh-100 align-items-center">
                     <Column md={8} class="mx-auto">
@@ -219,8 +217,7 @@ fn app() -> Html {
 
                             <QuestionsList
                                 questions={ questions.clone() }
-                                answers={ answers.clone() }
-                                onchange={ onchange.clone() }
+                                oninput= { oninput.clone() }
                             />
 
                             <Button
