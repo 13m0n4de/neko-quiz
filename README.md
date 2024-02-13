@@ -33,7 +33,7 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 ### Docker 镜像
 
 ```
-$ docker pull ghcr.io/13m0n4de/neko-quiz:main
+$ docker pull ghcr.io/13m0n4de/neko-quiz:latest
 ```
 
 ### 从源文件安装
