@@ -156,7 +156,7 @@ $ docker-compose up -d
 编译 Release 版本并启动：
 
 ```
-$ ./prod.sh
+$ ./scripts/prod.sh
 ```
 
 构建本地 Docker 镜像：
