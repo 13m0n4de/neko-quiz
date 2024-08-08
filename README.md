@@ -4,7 +4,7 @@
 
 NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md) 的仿制。
 
-Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum) ，一键部署至各比赛平台。
+Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum)。
 
 ![GitHub License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz?style=for-the-badge)
@@ -24,6 +24,9 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 ![demo-1](assets/demo-1.png)
 ![demo-2](assets/demo-2.png)
 
+> \[!WARNING\]
+> 本项目仍处于开发阶段，可能存在未知的安全隐患和缺陷，仅作为实验和学习用途，不建议直接应用于生产环境。
+
 ## 安装
 
 ### 预构建二进制文件
@@ -33,7 +36,7 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 ### Docker 镜像
 
 ```
-$ docker pull ghcr.io/13m0n4de/neko-quiz:latest
+$ docker pull ghcr.io/13m0n4de/neko-quiz
 ```
 
 ### 从源文件安装
@@ -57,7 +60,7 @@ $ git clone https://github.com/13m0n4de/neko-quiz/
 $ ./scripts/build.sh
 ```
 
-前端文件输出在 `dist/` 后端文件输出在 `target/release/server`
+前端文件输出在 `dist/`，后端文件输出在 `target/release/server`。
 
 ## 配置
 
@@ -184,6 +187,7 @@ Options:
 
 ## 使用案例
 
+- [SVUCTF-SPRING-2024 猫咪问答](https://github.com/SVUCTF/SVUCTF-SPRING-2024/tree/main/challenges/misc/neko_quiz)
 - [SVUCTF/SVUCTF-WINTER-2023 猫娘问答](https://github.com/SVUCTF/SVUCTF-WINTER-2023/tree/main/challenges/misc/neko_quiz)
 
 ## 许可证
