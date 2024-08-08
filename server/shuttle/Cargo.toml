@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 api = { workspace = true }
-shuttle-runtime = { version = "0.36.0", default-features = false }
-shuttle-axum = "0.36.0"
+shuttle-runtime = { version = "0.47.0", default-features = false }
+shuttle-axum = "0.47.0"
 toml = "0.8.9"
