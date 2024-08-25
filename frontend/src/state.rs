@@ -1,4 +1,5 @@
 use gloo_storage::{LocalStorage, Storage};
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
@@ -11,8 +12,8 @@ use crate::models::{AlertInfo, Info, Question, QuizResponse};
 #[derive(Default, PartialEq, Clone)]
 pub struct State {
     pub header: String,
-    pub questions: Vec<Question>,
-    pub answers: HashMap<String, String>,
+    pub questions: Rc<Vec<Question>>,
+    pub answers: Rc<RefCell<HashMap<String, String>>>,
     pub alert_info: Option<AlertInfo>,
 }
 
@@ -30,14 +31,12 @@ impl Reducible for State {
         match action {
             Action::Info(info) => Rc::new(State {
                 header: info.title,
-                questions: info.questions,
+                questions: Rc::new(info.questions),
                 ..(*self).clone()
             }),
             Action::Answer(id, answer) => {
-                let mut new_state = (*self).clone();
-                new_state.answers.insert(id.clone(), answer.clone());
-                LocalStorage::set(id, &answer).unwrap_or_default();
-                Rc::new(new_state)
+                self.answers.borrow_mut().insert(id, answer);
+                self
             }
             Action::AlertInfo(info) => Rc::new(State {
                 alert_info: info,
@@ -97,9 +96,9 @@ impl AppContext {
 
     pub fn submit_answers(&self) {
         let state = self.state.clone();
-        let answers = state.answers.clone();
+        let answers = state.answers.borrow().clone();
         spawn_local(async move {
-            match submit_answers(&answers).await {
+            match submit_answers(answers).await {
                 Ok(response) => state.dispatch(Action::QuizResponse(response)),
                 Err(err) => state.dispatch(Action::AlertInfo(Some(AlertInfo {
                     color: Color::Danger,

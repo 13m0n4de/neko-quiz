@@ -14,13 +14,10 @@ pub async fn get_info() -> Result<Info, String> {
         .map_err(|_| "Failed to parse server response.".to_string())
 }
 
-pub async fn submit_answers(answers_map: &HashMap<String, String>) -> Result<QuizResponse, String> {
-    let answers_data: Vec<Answer> = answers_map
-        .iter()
-        .map(|(id, answer)| Answer {
-            id: id.clone(),
-            answer: answer.clone(),
-        })
+pub async fn submit_answers(answers: HashMap<String, String>) -> Result<QuizResponse, String> {
+    let answers_data: Vec<Answer> = answers
+        .into_iter()
+        .map(|(id, answer)| Answer { id, answer })
         .collect();
 
     let request = Request::post("/api/answers")

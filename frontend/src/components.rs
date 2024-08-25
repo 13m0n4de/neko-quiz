@@ -12,7 +12,7 @@ use yew_bootstrap::util::Color;
 pub fn header() -> Html {
     let context = use_app_context();
     html! {
-        <h1 class="mb-4">{ context.state.header.clone() }</h1>
+        <h1 class="mb-4">{ &context.state.header }</h1>
     }
 }
 
@@ -42,7 +42,7 @@ pub fn questions_list() -> Html {
     html! {
         <>
             { for context.state.questions.iter().enumerate().map(|(idx, question)| {
-                let stored_answer = context.state.answers.get(&question.id).cloned().unwrap_or_default();
+                let stored_answer = context.state.answers.borrow().get(&question.id).cloned().unwrap_or_default();
 
                 let text = Html::from_html_unchecked(AttrValue::from(question.text.clone()));
                 let hint = Html::from_html_unchecked(AttrValue::from(question.hint.clone()));

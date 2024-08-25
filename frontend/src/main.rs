@@ -1,3 +1,5 @@
+#![warn(clippy::all, clippy::pedantic)]
+
 mod api;
 mod app;
 mod components;
