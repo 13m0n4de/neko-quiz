@@ -1,8 +1,7 @@
-#![warn(clippy::all, clippy::pedantic)]
-
 mod api;
 mod app;
 mod components;
+mod error;
 mod models;
 mod state;
 

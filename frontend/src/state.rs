@@ -88,7 +88,7 @@ impl AppContext {
                 Ok(info) => state.dispatch(Action::Info(info)),
                 Err(err) => state.dispatch(Action::AlertInfo(Some(AlertInfo {
                     color: Color::Danger,
-                    text: err,
+                    text: err.to_string(),
                 }))),
             }
         });
@@ -102,7 +102,7 @@ impl AppContext {
                 Ok(response) => state.dispatch(Action::QuizResponse(response)),
                 Err(err) => state.dispatch(Action::AlertInfo(Some(AlertInfo {
                     color: Color::Danger,
-                    text: err,
+                    text: err.to_string(),
                 }))),
             }
         });
