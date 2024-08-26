@@ -127,7 +127,7 @@ correct = "🎉🎉🎉 $FLAG 🎉🎉🎉"
 ```
 $ tar xvf x86_64-unknown-linux-musl.tar.gz
 $ ./neko-quiz
-$ ./neko-quiz -a 0.0.0.0 -p 8080
+$ ./neko-quiz -a 0.0.0.0:3000
 ```
 
 更多参数参考[帮助](#%E5%B8%AE%E5%8A%A9)。
@@ -178,8 +178,7 @@ Usage: neko-quiz [OPTIONS]
 
 Options:
   -l, --log <LOG_LEVEL>          [default: debug]
-  -a, --addr <ADDR>              [default: localhost]
-  -p, --port <PORT>              [default: 3000]
+  -a, --addr <ADDR>              [default: 127.0.0.1:3000]
   -c, --config <CONFIG>          [default: config.toml]
       --static-dir <STATIC_DIR>  [default: ./dist]
   -h, --help                     Print help

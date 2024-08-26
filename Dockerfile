@@ -19,4 +19,4 @@ COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/server /neko-q
 
 ENTRYPOINT ["/neko-quiz"]
 
-CMD ["-a", "0.0.0.0"]
+CMD ["-a", "0.0.0.0:3000"]
