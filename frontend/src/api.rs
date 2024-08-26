@@ -1,6 +1,6 @@
 use crate::{
     error::QuizError,
-    models::{Answer, Info, QuizResponse},
+    models::{AnswerSubmission, Info, QuizResponse},
 };
 use gloo_net::http::Request;
 use std::collections::HashMap;
@@ -11,13 +11,10 @@ pub async fn get_info() -> Result<Info, QuizError> {
 }
 
 pub async fn submit_answers(answers: HashMap<String, String>) -> Result<QuizResponse, QuizError> {
-    let answers_data: Vec<Answer> = answers
-        .into_iter()
-        .map(|(id, answer)| Answer { id, answer })
-        .collect();
+    let answer_submission = AnswerSubmission { answers };
 
     let response = Request::post("/api/answers")
-        .json(&answers_data)?
+        .json(&answer_submission)?
         .send()
         .await?;
 

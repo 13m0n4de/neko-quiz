@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use yew_bootstrap::util::Color;
 
@@ -22,9 +24,8 @@ pub struct AlertInfo {
 }
 
 #[derive(Serialize)]
-pub struct Answer {
-    pub id: String,
-    pub answer: String,
+pub struct AnswerSubmission {
+    pub answers: HashMap<String, String>,
 }
 
 #[derive(Deserialize, PartialEq, Clone)]
