@@ -16,6 +16,7 @@ FROM scratch
 
 COPY --from=builder /app/dist/ /dist
 COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/server /neko-quiz
+COPY --from=builder /app/config.toml /config.toml
 
 ENTRYPOINT ["/neko-quiz"]
 
