@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use yew_bootstrap::util::Color;
 
-#[derive(Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, PartialEq)]
 pub struct Info {
     pub title: String,
     pub questions: Vec<Question>,
 }
 
-#[derive(Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, PartialEq)]
 pub struct Question {
     pub id: String,
     pub text: String,
@@ -28,7 +28,7 @@ pub struct AnswerSubmission {
     pub answers: HashMap<String, String>,
 }
 
-#[derive(Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, PartialEq)]
 pub struct QuizResponse {
     pub status: bool,
     pub score: u8,

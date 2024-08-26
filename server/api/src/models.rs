@@ -3,20 +3,20 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize)]
 pub struct Flag {
     pub env: String,
     pub file: String,
     pub static_str: String,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize)]
 pub struct Message {
     pub incorrect: String,
     pub correct: String,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize)]
 pub struct Config {
     pub title: String,
     pub questions: Vec<QuestionConfig>,
@@ -24,7 +24,7 @@ pub struct Config {
     pub message: Message,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize)]
 pub struct QuestionConfig {
     pub text: String,
     pub points: u8,
@@ -32,7 +32,7 @@ pub struct QuestionConfig {
     pub answers: Vec<String>,
 }
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Question {
     pub id: Uuid,
     pub text: String,
@@ -53,7 +53,7 @@ impl From<QuestionConfig> for Question {
         }
     }
 }
-#[derive(Serialize, Clone)]
+#[derive(Serialize)]
 pub struct Quiz {
     pub title: String,
     pub questions: Vec<Question>,

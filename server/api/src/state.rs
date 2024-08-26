@@ -14,7 +14,7 @@ impl AppState {
         let mut questions = Vec::new();
 
         for q_config in config.questions {
-            let question = Question::from(q_config.clone());
+            let question = Question::from(q_config);
             questions.push(question);
         }
 
