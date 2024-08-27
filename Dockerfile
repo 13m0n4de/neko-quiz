@@ -1,21 +1,22 @@
-FROM rust:1.75.0 AS builder
+FROM rust:1.80.0-alpine AS builder
 
 WORKDIR /app
 COPY . .
 
-RUN apt-get update && \
-    apt-get install -y binaryen musl-tools && \
-    rm -rf /var/lib/apt/lists/* && \
+RUN set -xe && \
+    apk add --no-cache binaryen musl-dev && \
     rustup target add wasm32-unknown-unknown && \
-    rustup target add x86_64-unknown-linux-musl && \
     cargo install trunk
 
-RUN ./scripts/build.sh x86_64-unknown-linux-musl
+RUN cd frontend && \
+    CARGO_TARGET_DIR=../target-trunk trunk build --release && \
+    cd ..
+RUN cargo build --bin server --release
 
 FROM scratch
 
 COPY --from=builder /app/dist/ /dist
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/server /neko-quiz
+COPY --from=builder /app/target/release/server /neko-quiz
 COPY --from=builder /app/config.toml /config.toml
 
 ENTRYPOINT ["/neko-quiz"]
