@@ -1,4 +1,5 @@
 #![warn(clippy::all, clippy::pedantic)]
+#![allow(clippy::module_name_repetitions)]
 
 mod handlers;
 mod models;
@@ -8,7 +9,8 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use std::{path::PathBuf, sync::Arc};
+use std::{path::Path, sync::Arc};
+use tokio::sync::RwLock;
 use tower::ServiceBuilder;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 
@@ -17,7 +19,7 @@ use state::AppState;
 
 pub use models::Config;
 
-pub fn build_router(config: Config, serve_dir: PathBuf) -> Router {
+pub fn build_router<P: AsRef<Path>>(config: Arc<RwLock<Config>>, serve_dir: P) -> Router {
     let state = Arc::new(AppState::new(config));
 
     Router::new()

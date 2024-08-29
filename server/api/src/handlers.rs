@@ -9,8 +9,8 @@ use crate::{
 
 pub async fn get_quiz(State(state): State<Arc<AppState>>) -> Json<Quiz> {
     Json(Quiz {
-        title: state.title.clone(),
-        questions: state.questions.clone(),
+        title: state.title().await,
+        questions: state.questions().await,
     })
 }
 
@@ -21,23 +21,26 @@ pub async fn submit_answers(
     let mut status = true;
     let mut score = 0;
 
-    for question in &state.questions {
+    for question in &state.questions().await {
         match submission.answers.get(&question.id) {
             Some(answer) if question.answers.contains(answer) => score += question.points,
             _ => status = false,
         }
     }
 
-    let message = if status {
-        state.message.correct.replace("$FLAG", &state.flag)
+    let message = state.message().await;
+    let flag = state.flag().await;
+
+    let response_message = if status {
+        message.correct.replace("$FLAG", &flag)
     } else {
-        state.message.incorrect.clone()
+        message.incorrect
     };
 
     let response = QuizResponse {
         status,
         score,
-        message,
+        message: response_message,
     };
 
     Json(response)

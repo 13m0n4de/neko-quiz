@@ -10,7 +10,7 @@ pub struct Flag {
     pub static_str: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Message {
     pub incorrect: String,
     pub correct: String,
@@ -19,21 +19,14 @@ pub struct Message {
 #[derive(Deserialize)]
 pub struct Config {
     pub title: String,
-    pub questions: Vec<QuestionConfig>,
+    pub questions: Vec<Question>,
     pub flag: Flag,
     pub message: Message,
 }
 
-#[derive(Deserialize)]
-pub struct QuestionConfig {
-    pub text: String,
-    pub points: u8,
-    pub hint: String,
-    pub answers: Vec<String>,
-}
-
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Question {
+    #[serde(default = "Uuid::new_v4")]
     pub id: Uuid,
     pub text: String,
     pub points: u8,
@@ -42,17 +35,6 @@ pub struct Question {
     pub answers: Vec<String>,
 }
 
-impl From<QuestionConfig> for Question {
-    fn from(config: QuestionConfig) -> Self {
-        Self {
-            id: Uuid::new_v4(),
-            text: config.text,
-            points: config.points,
-            hint: config.hint,
-            answers: config.answers,
-        }
-    }
-}
 #[derive(Serialize)]
 pub struct Quiz {
     pub title: String,
