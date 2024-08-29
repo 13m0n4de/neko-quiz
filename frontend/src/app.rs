@@ -16,7 +16,6 @@ pub fn app() -> Html {
     {
         let context = context.clone();
         use_effect_with((), move |()| {
-            context.load_stored_answers();
             context.fetch_info();
         });
     }

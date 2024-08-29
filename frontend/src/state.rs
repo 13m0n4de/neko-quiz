@@ -33,7 +33,7 @@ impl Reducible for State {
             Action::Info(info) => Rc::new(State {
                 header: info.title,
                 questions: Rc::new(info.questions),
-                ..(*self).clone()
+                ..Default::default()
             }),
             Action::Answer(id, answer) => {
                 self.answers.borrow_mut().insert(id.clone(), answer.clone());
@@ -73,14 +73,6 @@ pub struct AppContext {
 impl AppContext {
     pub fn new(state: UseReducerHandle<State>) -> Self {
         Self { state }
-    }
-
-    pub fn load_stored_answers(&self) {
-        let state = self.state.clone();
-        let stored_answers: HashMap<String, String> = LocalStorage::get_all().unwrap_or_default();
-        for (key, value) in stored_answers {
-            state.dispatch(Action::Answer(key, value));
-        }
     }
 
     pub fn fetch_info(&self) {
