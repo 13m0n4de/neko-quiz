@@ -3,6 +3,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
+use web_sys::wasm_bindgen::UnwrapThrowExt;
 use yew::prelude::*;
 use yew_bootstrap::util::Color;
 
@@ -35,7 +36,8 @@ impl Reducible for State {
                 ..(*self).clone()
             }),
             Action::Answer(id, answer) => {
-                self.answers.borrow_mut().insert(id, answer);
+                self.answers.borrow_mut().insert(id.clone(), answer.clone());
+                LocalStorage::set(id, answer).unwrap_throw();
                 self
             }
             Action::AlertInfo(info) => Rc::new(State {

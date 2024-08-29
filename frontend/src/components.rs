@@ -31,11 +31,11 @@ pub fn alert_display() -> Html {
 pub fn questions_list() -> Html {
     let context = use_app_context();
 
-    let oninput = {
+    let onchange = {
         let state = context.state.clone();
-        Callback::from(move |event: InputEvent| {
+        Callback::from(move |event: Event| {
             let target: HtmlInputElement = event.target_unchecked_into();
-            state.dispatch(Action::Answer(target.id(), target.value()));
+            state.dispatch(Action::Answer(target.name(), target.value()));
         })
     };
 
@@ -56,15 +56,17 @@ pub fn questions_list() -> Html {
                         </CardText>
                         <small class="text-muted">{ "提示：" }{ hint }</small>
                         <FormControl
-                            id={ question.id.clone() }
+                            id={ format!("question-{}", idx + 1) }
+                            name={ question.id.clone() }
                             ctype={ FormControlType::Text }
                             class="my-2"
-                            value={stored_answer}
-                            oninput={ oninput.clone() }
+                            value={ stored_answer }
+                            onchange={ onchange.clone() }
                         />
                     </Card>
                 }
             }) }
+            <SubmitButton />
         </>
     }
 }

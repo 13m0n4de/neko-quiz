@@ -5,7 +5,7 @@ use yew_bootstrap::{
 };
 use yew_hooks::use_title;
 
-use crate::components::{AlertDisplay, Header, QuestionsList, SubmitButton};
+use crate::components::{AlertDisplay, Header, QuestionsList};
 use crate::state::{AppContext, State};
 
 #[function_component(App)]
@@ -23,6 +23,14 @@ pub fn app() -> Html {
 
     use_title(state.header.clone());
 
+    let onsubmit = {
+        let context = context.clone();
+        Callback::from(move |e: SubmitEvent| {
+            e.prevent_default();
+            context.submit_answers();
+        })
+    };
+
     html! {
         <ContextProvider<AppContext> context={context}>
             { include_cdn() }
@@ -32,8 +40,9 @@ pub fn app() -> Html {
                         <div class="text-center my-4">
                             <Header />
                             <AlertDisplay />
-                            <QuestionsList />
-                            <SubmitButton />
+                            <from {onsubmit}>
+                                <QuestionsList />
+                            </from>
                         </div>
                     </Column>
                 </Row>
