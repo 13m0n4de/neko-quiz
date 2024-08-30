@@ -138,8 +138,10 @@ async fn watch_files(
                 Ok(event) if event.kind.is_modify() => {
                     debug!("Config file change detected");
                     match load_config(&config_path).await {
-                        Ok(new_config) => {
-                            *config.write().await = new_config;
+                        Ok(mut new_config) => {
+                            let mut config_write = config.write().await;
+                            new_config.version = config_write.version + 1;
+                            *config_write = new_config;
                             reloader.reload();
                         }
                         Err(e) => error!("Failed to reload config: {e}"),

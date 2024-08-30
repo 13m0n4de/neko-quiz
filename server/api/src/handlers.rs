@@ -11,6 +11,7 @@ pub async fn get_quiz(State(state): State<Arc<AppState>>) -> Json<Quiz> {
     Json(Quiz {
         title: state.title().await,
         questions: state.questions().await,
+        version: state.version().await,
     })
 }
 

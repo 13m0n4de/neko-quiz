@@ -22,6 +22,8 @@ pub struct Config {
     pub questions: Vec<Question>,
     pub flag: Flag,
     pub message: Message,
+    #[serde(default)]
+    pub version: u64,
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -39,6 +41,8 @@ pub struct Question {
 pub struct Quiz {
     pub title: String,
     pub questions: Vec<Question>,
+    #[serde(default)]
+    pub version: u64,
 }
 
 #[derive(Deserialize, Clone)]

@@ -3,54 +3,102 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
-use web_sys::wasm_bindgen::UnwrapThrowExt;
 use yew::prelude::*;
 use yew_bootstrap::util::Color;
 
 use crate::api::{get_info, submit_answers};
-use crate::models::{AlertInfo, Info, Question, QuizResponse};
+use crate::models::{AlertInfo, Question, Quiz, QuizResponse};
+
+const VERSION_KEY: &str = "quiz_version";
 
 #[derive(Default, PartialEq, Clone)]
-pub struct State {
+pub struct AppState {
     pub header: String,
     pub questions: Rc<Vec<Question>>,
     pub answers: Rc<RefCell<HashMap<String, String>>>,
     pub alert_info: Option<AlertInfo>,
 }
 
-pub enum Action {
-    Info(Info),
-    Answer(String, String),
-    AlertInfo(Option<AlertInfo>),
-    QuizResponse(QuizResponse),
+impl AppState {
+    fn get_stored_version() -> u64 {
+        LocalStorage::get(VERSION_KEY).unwrap_or(0)
+    }
+
+    fn set_stored_version(version: u64) {
+        LocalStorage::set(VERSION_KEY, version).expect("Failed to set quiz version");
+    }
+
+    fn clear_local_storage() {
+        LocalStorage::clear();
+    }
 }
 
-impl Reducible for State {
-    type Action = Action;
+pub enum AppAction {
+    SetInfo(Quiz),
+    SetAnswer(String, String),
+    SetAlertInfo(Option<AlertInfo>),
+    LoadStoredAnswers,
+    SetQuizResponse(QuizResponse),
+}
+
+impl Reducible for AppState {
+    type Action = AppAction;
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         match action {
-            Action::Info(info) => Rc::new(State {
-                header: info.title,
-                questions: Rc::new(info.questions),
-                ..Default::default()
-            }),
-            Action::Answer(id, answer) => {
+            AppAction::SetInfo(info) => {
+                let new_version = info.version;
+                let stored_version = Self::get_stored_version();
+
+                let should_clear_storage = stored_version != new_version;
+
+                if should_clear_storage {
+                    Self::clear_local_storage();
+                    Self::set_stored_version(new_version);
+                }
+
+                Rc::new(AppState {
+                    header: info.title,
+                    questions: Rc::new(info.questions),
+                    answers: if should_clear_storage {
+                        Rc::new(RefCell::new(HashMap::new()))
+                    } else {
+                        self.answers.clone()
+                    },
+                    ..(*self).clone()
+                })
+            }
+            AppAction::SetAnswer(id, answer) => {
                 self.answers.borrow_mut().insert(id.clone(), answer.clone());
-                LocalStorage::set(id, answer).unwrap_throw();
+                LocalStorage::set(id, answer).expect("Failed to set answer in local storage");
                 self
             }
-            Action::AlertInfo(info) => Rc::new(State {
+            AppAction::SetAlertInfo(info) => Rc::new(AppState {
                 alert_info: info,
                 ..(*self).clone()
             }),
-            Action::QuizResponse(response) => {
+            AppAction::LoadStoredAnswers => {
+                let stored_answers = self
+                    .questions
+                    .iter()
+                    .filter_map(|q| {
+                        LocalStorage::get(&q.id)
+                            .ok()
+                            .map(|answer| (q.id.clone(), answer))
+                    })
+                    .collect();
+                Rc::new(AppState {
+                    answers: Rc::new(RefCell::new(stored_answers)),
+                    ..(*self).clone()
+                })
+            }
+            AppAction::SetQuizResponse(response) => {
                 let color = if response.status {
                     Color::Success
                 } else {
                     Color::Secondary
                 };
-                Rc::new(State {
+                Rc::new(AppState {
                     alert_info: Some(AlertInfo {
                         color,
                         text: format!(
@@ -67,11 +115,11 @@ impl Reducible for State {
 
 #[derive(PartialEq, Clone)]
 pub struct AppContext {
-    pub state: UseReducerHandle<State>,
+    pub state: UseReducerHandle<AppState>,
 }
 
 impl AppContext {
-    pub fn new(state: UseReducerHandle<State>) -> Self {
+    pub fn new(state: UseReducerHandle<AppState>) -> Self {
         Self { state }
     }
 
@@ -79,8 +127,11 @@ impl AppContext {
         let state = self.state.clone();
         spawn_local(async move {
             match get_info().await {
-                Ok(info) => state.dispatch(Action::Info(info)),
-                Err(err) => state.dispatch(Action::AlertInfo(Some(AlertInfo {
+                Ok(info) => {
+                    state.dispatch(AppAction::SetInfo(info));
+                    state.dispatch(AppAction::LoadStoredAnswers);
+                }
+                Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
                     color: Color::Danger,
                     text: err.to_string(),
                 }))),
@@ -93,8 +144,8 @@ impl AppContext {
         let answers = state.answers.borrow().clone();
         spawn_local(async move {
             match submit_answers(answers).await {
-                Ok(response) => state.dispatch(Action::QuizResponse(response)),
-                Err(err) => state.dispatch(Action::AlertInfo(Some(AlertInfo {
+                Ok(response) => state.dispatch(AppAction::SetQuizResponse(response)),
+                Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
                     color: Color::Danger,
                     text: err.to_string(),
                 }))),

@@ -1,4 +1,4 @@
-use crate::state::{use_app_context, Action};
+use crate::state::{use_app_context, AppAction};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_bootstrap::component::{
@@ -35,7 +35,7 @@ pub fn questions_list() -> Html {
         let state = context.state.clone();
         Callback::from(move |event: Event| {
             let target: HtmlInputElement = event.target_unchecked_into();
-            state.dispatch(Action::Answer(target.name(), target.value()));
+            state.dispatch(AppAction::SetAnswer(target.name(), target.value()));
         })
     };
 

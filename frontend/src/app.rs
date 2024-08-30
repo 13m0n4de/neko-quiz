@@ -6,11 +6,11 @@ use yew_bootstrap::{
 use yew_hooks::use_title;
 
 use crate::components::{AlertDisplay, Header, QuestionsList};
-use crate::state::{AppContext, State};
+use crate::state::{AppContext, AppState};
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let state = use_reducer_eq(State::default);
+    let state = use_reducer_eq(AppState::default);
     let context = AppContext::new(state.clone());
 
     {

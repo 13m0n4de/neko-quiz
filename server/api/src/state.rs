@@ -12,6 +12,10 @@ impl AppState {
         Self { config }
     }
 
+    pub async fn version(&self) -> u64 {
+        self.config.read().await.version
+    }
+
     pub async fn title(&self) -> String {
         self.config.read().await.title.clone()
     }

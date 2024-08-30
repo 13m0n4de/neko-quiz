@@ -4,9 +4,10 @@ use serde::{Deserialize, Serialize};
 use yew_bootstrap::util::Color;
 
 #[derive(Deserialize, PartialEq)]
-pub struct Info {
+pub struct Quiz {
     pub title: String,
     pub questions: Vec<Question>,
+    pub version: u64,
 }
 
 #[derive(Deserialize, PartialEq)]
