@@ -1,32 +1,42 @@
-title = "猫咪小测"
+title = "猫咪问答"
 
 [[questions]]
-text = "想要借阅世界图书出版公司出版的《A Classical Introduction To Modern Number Theory 2nd ed.》，应当前往中国科学技术大学西区图书馆的哪一层？"
-points = 30
-hint = "是一个非负整数。"
-answers = ["12"]
-
-[[questions]]
-text = "今年 arXiv 网站的天体物理版块上有人发表了一篇关于「可观测宇宙中的鸡的密度上限」的论文，请问论文中作者计算出的鸡密度函数的上限为 10 的多少次方每立方秒差距？"
-points = 30
-hint = "是一个非负整数。"
-answers = ["23"]
-
-[[questions]]
-text = "为了支持 TCP BBR 拥塞控制算法，在<b>编译</b> Linux 内核时应该配置好哪一条内核选项？"
+text = "想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"
 points = 20
-hint = "输入格式为 CONFIG_XXXXX，如 CONFIG_SCHED_SMT。"
-answers = ["CONFIG_TCP_CONG_BBR"]
+hint = "格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"
+answers = ["苏图-北馆书库", "苏图-设计图书馆"]
 
 [[questions]]
-text = "🥒🥒🥒：「我……从没觉得写类型标注有意思过」。在一篇论文中，作者给出了能够让 Python 的类型检查器 MyPY mypy 陷入死循环的代码，并证明 Python 的类型检查和停机问题一样困难。请问这篇论文发表在今年的哪个学术会议上？"
+text = """「你们这些搞计算机的，就是喜欢卖弄学问，数个数还得从零开始」。
+其实编号从零开始是有道理的，一位计算机科学家还专门写过一篇简短的<b>手写稿</b>来解释，
+请问这个手写稿的编写日期是？
+"""
 points = 20
-hint = "会议的大写英文简称，比如 ISCA、CCS、ICML。"
-answers = ["ECOOP"]
+hint = "格式：YYYY-MM-DD ，如 2024-02-05"
+answers = ["1982-08-11"]
+
+[[questions]]
+text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位 (bit)？"
+points = 20
+hint = "格式：整数，如 32"
+answers = ["16"]
+
+[[questions]]
+text = "Hare 编程语言的官方风格指南中，行宽被限制为多少列？"
+points = 20
+hint = "格式：整数，如 120"
+answers = ["80"]
+
+[[questions]]
+text = """在某次在线学术会议上，展示了一种通过声学侧信道推断 VoIP 呼叫来源的攻击手段，
+请问这个会议的名称是？"""
+points = 20
+hint = "格式：会议名称 + 年份，以空格分割，如 ECOOP 2024"
+answers = ["ACM WiSec 2021", "WiSec 2021"]
 
 [flag]
-env = "FLAG"
-file = "/flag"
+env = "GZCTF_FLAG"
+file = "/fla"
 static_str = "flag{neko_quiz_static_flag}"
 
 [message]
