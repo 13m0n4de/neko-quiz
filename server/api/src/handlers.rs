@@ -15,7 +15,7 @@ pub async fn get_quiz(State(state): State<Arc<AppState>>) -> Json<Quiz> {
     })
 }
 
-pub async fn submit_answers(
+pub async fn create_submission(
     State(state): State<Arc<AppState>>,
     Json(submission): Json<AnswerSubmission>,
 ) -> Json<QuizResponse> {

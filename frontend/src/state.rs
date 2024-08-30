@@ -6,10 +6,11 @@ use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 use yew_bootstrap::util::Color;
 
-use crate::api::{get_info, submit_answers};
+use crate::api::{create_submission, get_quiz};
 use crate::models::{AlertInfo, Question, Quiz, QuizResponse};
 
 const VERSION_KEY: &str = "quiz_version";
+const ANSWERS_KEY: &str = "quiz_answers";
 
 #[derive(Default, PartialEq, Clone)]
 pub struct AppState {
@@ -21,11 +22,19 @@ pub struct AppState {
 
 impl AppState {
     fn get_stored_version() -> u64 {
-        LocalStorage::get(VERSION_KEY).unwrap_or(0)
+        LocalStorage::get(VERSION_KEY).unwrap_or_default()
     }
 
     fn set_stored_version(version: u64) {
         LocalStorage::set(VERSION_KEY, version).expect("Failed to set quiz version");
+    }
+
+    fn get_stored_answers() -> HashMap<String, String> {
+        LocalStorage::get(ANSWERS_KEY).unwrap_or_default()
+    }
+
+    fn set_stored_answers(answers: &HashMap<String, String>) {
+        LocalStorage::set(ANSWERS_KEY, answers).expect("Failed to save answers to local storage");
     }
 
     fn clear_local_storage() {
@@ -34,10 +43,9 @@ impl AppState {
 }
 
 pub enum AppAction {
-    SetInfo(Quiz),
+    SetQuiz(Quiz),
     SetAnswer(String, String),
     SetAlertInfo(Option<AlertInfo>),
-    LoadStoredAnswers,
     SetQuizResponse(QuizResponse),
 }
 
@@ -46,52 +54,33 @@ impl Reducible for AppState {
 
     fn reduce(self: Rc<Self>, action: Self::Action) -> Rc<Self> {
         match action {
-            AppAction::SetInfo(info) => {
-                let new_version = info.version;
+            AppAction::SetQuiz(quiz) => {
+                let new_version = quiz.version;
                 let stored_version = Self::get_stored_version();
 
-                let should_clear_storage = stored_version != new_version;
-
-                if should_clear_storage {
+                let answers = if new_version == stored_version {
+                    Self::get_stored_answers()
+                } else {
                     Self::clear_local_storage();
                     Self::set_stored_version(new_version);
-                }
+                    HashMap::new()
+                };
 
                 Rc::new(AppState {
-                    header: info.title,
-                    questions: Rc::new(info.questions),
-                    answers: if should_clear_storage {
-                        Rc::new(RefCell::new(HashMap::new()))
-                    } else {
-                        self.answers.clone()
-                    },
+                    header: quiz.title,
+                    questions: Rc::new(quiz.questions),
+                    answers: Rc::new(RefCell::new(answers)),
                     ..(*self).clone()
                 })
             }
             AppAction::SetAnswer(id, answer) => {
                 self.answers.borrow_mut().insert(id.clone(), answer.clone());
-                LocalStorage::set(id, answer).expect("Failed to set answer in local storage");
                 self
             }
             AppAction::SetAlertInfo(info) => Rc::new(AppState {
                 alert_info: info,
                 ..(*self).clone()
             }),
-            AppAction::LoadStoredAnswers => {
-                let stored_answers = self
-                    .questions
-                    .iter()
-                    .filter_map(|q| {
-                        LocalStorage::get(&q.id)
-                            .ok()
-                            .map(|answer| (q.id.clone(), answer))
-                    })
-                    .collect();
-                Rc::new(AppState {
-                    answers: Rc::new(RefCell::new(stored_answers)),
-                    ..(*self).clone()
-                })
-            }
             AppAction::SetQuizResponse(response) => {
                 let color = if response.status {
                     Color::Success
@@ -123,13 +112,12 @@ impl AppContext {
         Self { state }
     }
 
-    pub fn fetch_info(&self) {
+    pub fn get_quiz(&self) {
         let state = self.state.clone();
         spawn_local(async move {
-            match get_info().await {
-                Ok(info) => {
-                    state.dispatch(AppAction::SetInfo(info));
-                    state.dispatch(AppAction::LoadStoredAnswers);
+            match get_quiz().await {
+                Ok(quiz) => {
+                    state.dispatch(AppAction::SetQuiz(quiz));
                 }
                 Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
                     color: Color::Danger,
@@ -139,11 +127,12 @@ impl AppContext {
         });
     }
 
-    pub fn submit_answers(&self) {
+    pub fn create_submission(&self) {
         let state = self.state.clone();
         let answers = state.answers.borrow().clone();
+        AppState::set_stored_answers(&answers);
         spawn_local(async move {
-            match submit_answers(answers).await {
+            match create_submission(answers).await {
                 Ok(response) => state.dispatch(AppAction::SetQuizResponse(response)),
                 Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
                     color: Color::Danger,

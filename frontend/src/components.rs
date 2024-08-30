@@ -66,7 +66,6 @@ pub fn questions_list() -> Html {
                     </Card>
                 }
             }) }
-            <SubmitButton />
         </>
     }
 }
@@ -78,7 +77,7 @@ pub fn submit_button() -> Html {
     let onclick = {
         let context = context.clone();
         Callback::from(move |_: MouseEvent| {
-            context.submit_answers();
+            context.create_submission();
         })
     };
 
