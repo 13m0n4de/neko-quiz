@@ -111,7 +111,7 @@ hint = "格式：会议名称 + 年份，以空格分割，如 ECOOP 2024"
 answers = [ "ACM WiSec 2021", "WiSec 2021",]
 
 [flag]
-env = "GZCTF_FLAG"
+env = "FLAG"
 file = "/flag"
 static_str = "flag{neko_quiz_static_flag}"
 
