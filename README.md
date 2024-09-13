@@ -79,7 +79,6 @@ docker pull ghcr.io/13m0n4de/neko-quiz
 项目根目录有一份配置示例：[config.toml](config.toml)
 
 ```toml
-title = "猫咪问答"
 [[questions]]
 text = "想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"
 points = 20
@@ -105,10 +104,14 @@ hint = "格式：整数，如 120"
 answers = [ "80",]
 
 [[questions]]
-text = "在某次在线学术会议上，展示了一种通过声学侧信道推断 VoIP 呼叫来源的攻击手段，\n请问这个会议的名称是？"
+text = "在某次在线学术会议上，展示了一种通过声学侧信道推断 VoIP 呼叫来源的攻击手段，请问这个会议的名称是？"
 points = 20
 hint = "格式：会议名称 + 年份，以空格分割，如 ECOOP 2024"
 answers = [ "ACM WiSec 2021", "WiSec 2021",]
+
+[general]
+title = "猫咪问答"
+return_score = true
 
 [flag]
 env = "FLAG"
