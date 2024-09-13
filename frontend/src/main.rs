@@ -1,3 +1,7 @@
+#![warn(clippy::all, clippy::pedantic)]
+#![allow(clippy::module_name_repetitions)]
+#![allow(clippy::enum_variant_names)]
+
 mod api;
 mod app;
 mod components;
