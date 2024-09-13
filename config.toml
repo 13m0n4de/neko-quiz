@@ -1,4 +1,6 @@
+[general]
 title = "猫咪问答"
+return_score = true
 
 [[questions]]
 text = "想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"

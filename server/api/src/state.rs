@@ -17,7 +17,11 @@ impl AppState {
     }
 
     pub async fn title(&self) -> String {
-        self.config.read().await.title.clone()
+        self.config.read().await.general.title.clone()
+    }
+
+    pub async fn return_score(&self) -> bool {
+        self.config.read().await.general.return_score
     }
 
     pub async fn questions(&self) -> Vec<Question> {

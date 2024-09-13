@@ -32,6 +32,6 @@ pub struct AnswerSubmission {
 #[derive(Deserialize, PartialEq)]
 pub struct QuizResponse {
     pub status: bool,
-    pub score: u8,
+    pub score: Option<u8>,
     pub message: String,
 }

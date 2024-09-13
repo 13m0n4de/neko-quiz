@@ -40,7 +40,11 @@ pub async fn create_submission(
 
     let response = QuizResponse {
         status,
-        score,
+        score: if state.return_score().await {
+            Some(score)
+        } else {
+            None
+        },
         message: response_message,
     };
 

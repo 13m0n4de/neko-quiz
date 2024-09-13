@@ -16,9 +16,15 @@ pub struct Message {
     pub correct: String,
 }
 
+#[derive(Deserialize, Serialize)]
+pub struct General {
+    pub title: String,
+    pub return_score: bool,
+}
+
 #[derive(Deserialize)]
 pub struct Config {
-    pub title: String,
+    pub general: General,
     pub questions: Vec<Question>,
     pub flag: Flag,
     pub message: Message,
@@ -53,6 +59,6 @@ pub struct AnswerSubmission {
 #[derive(Serialize)]
 pub struct QuizResponse {
     pub status: bool,
-    pub score: u8,
+    pub score: Option<u8>,
     pub message: String,
 }

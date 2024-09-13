@@ -87,13 +87,14 @@ impl Reducible for AppState {
                 } else {
                     Color::Secondary
                 };
+                let score_text = response
+                    .score
+                    .map(|s| format!("本次测验总得分为 {s}。<br/>"))
+                    .unwrap_or_default();
                 Rc::new(AppState {
                     alert_info: Some(AlertInfo {
                         color,
-                        text: format!(
-                            "本次测验总得分为 {}。<br/>{}",
-                            response.score, response.message
-                        ),
+                        text: format!("{score_text}{}", response.message),
                     }),
                     ..(*self).clone()
                 })
