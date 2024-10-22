@@ -21,7 +21,7 @@ pub fn app() -> Html {
     html! {
         <ContextProvider<AppContext> context={context}>
             <div class="min-h-screen bg-gray-50">
-                <main class="container mx-auto px-4 py-12 max-w-2xl">
+                <main class="container mx-auto px-4 py-12 max-w-4xl">
                     <Header />
                     <AlertDisplay />
                     <QuestionsList />
