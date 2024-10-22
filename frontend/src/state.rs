@@ -4,10 +4,9 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
-use yew_bootstrap::util::Color;
 
 use crate::api::{create_submission, get_quiz};
-use crate::models::{AlertInfo, Question, Quiz, QuizResponse};
+use crate::models::{AlertInfo, AlertType, Question, Quiz, QuizResponse};
 
 const VERSION_KEY: &str = "quiz_version";
 const ANSWERS_KEY: &str = "quiz_answers";
@@ -82,10 +81,10 @@ impl Reducible for AppState {
                 ..(*self).clone()
             }),
             AppAction::SetQuizResponse(response) => {
-                let color = if response.status {
-                    Color::Success
+                let alert_type = if response.status {
+                    AlertType::Success
                 } else {
-                    Color::Secondary
+                    AlertType::Info
                 };
                 let score_text = response
                     .score
@@ -93,7 +92,7 @@ impl Reducible for AppState {
                     .unwrap_or_default();
                 Rc::new(AppState {
                     alert_info: Some(AlertInfo {
-                        color,
+                        alert_type,
                         text: format!("{score_text}{}", response.message),
                     }),
                     ..(*self).clone()
@@ -121,7 +120,7 @@ impl AppContext {
                     state.dispatch(AppAction::SetQuiz(quiz));
                 }
                 Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
-                    color: Color::Danger,
+                    alert_type: AlertType::Error,
                     text: err.to_string(),
                 }))),
             }
@@ -136,7 +135,7 @@ impl AppContext {
             match create_submission(answers).await {
                 Ok(response) => state.dispatch(AppAction::SetQuizResponse(response)),
                 Err(err) => state.dispatch(AppAction::SetAlertInfo(Some(AlertInfo {
-                    color: Color::Danger,
+                    alert_type: AlertType::Error,
                     text: err.to_string(),
                 }))),
             }

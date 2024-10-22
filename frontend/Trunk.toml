@@ -4,3 +4,8 @@ dist = "../dist"
 
 [[proxy]]
 backend = "http://[::1]:3000/api/"
+
+[[hooks]]
+stage = "pre_build"
+command = "tailwindcss"
+command_arguments = ["-i", "styles.css", "-o", "app.css", "-m"]

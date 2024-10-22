@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use yew_bootstrap::util::Color;
 
 #[derive(Deserialize, PartialEq)]
 pub struct Quiz {
@@ -19,8 +18,15 @@ pub struct Question {
 }
 
 #[derive(PartialEq, Clone)]
+pub enum AlertType {
+    Success,
+    Error,
+    Info,
+}
+
+#[derive(PartialEq, Clone)]
 pub struct AlertInfo {
-    pub color: Color,
+    pub alert_type: AlertType,
     pub text: String,
 }
 
