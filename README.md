@@ -4,7 +4,7 @@
 
 NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md) 的仿制。
 
-Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getbootstrap.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum)。
+Rust 编写，前端使用 [Yew](https://yew.rs/) + [Tailwind CSS](https://tailwindcss.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum)。
 
 ![GitHub License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz?style=for-the-badge)
@@ -22,7 +22,7 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Bootstrap](https://getboots
 
 在线预览：[https://neko-quiz.shuttleapp.rs/](https://neko-quiz.shuttleapp.rs/)
 
-![demo-1](assets/demo.png)
+![demo](assets/demo.png)
 
 > \[!WARNING\]
 >
@@ -123,29 +123,38 @@ incorrect = "没有全部答对，不能给你 FLAG 哦。"
 correct = "🎉🎉🎉 $FLAG 🎉🎉🎉"
 ```
 
-| 配置项         | 子项           | 说明                          | 示例                                                           |
-| ----------- | ------------ | --------------------------- | ------------------------------------------------------------ |
-| `title`     | -            | 问答标题                        | `"猫咪问答"`                                                     |
-| `questions` | -            | 题目列表，可包含多个问题                | (见下方详细说明)                                                    |
-|             | `text`       | 问题正文，支持 HTML 标签             | `"想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"` |
-|             | `points`     | 问题分数                        | `20`                                                         |
-|             | `hint`       | 答题提示，支持 HTML 标签             | `"格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"`                 |
-|             | `answers`    | 正确答案列表，可设置多个                | `[ "苏图-北馆书库", "苏图-设计图书馆" ]`                                  |
-| `flag`      | -            | Flag 获取方式配置                 | (见下方详细说明)                                                    |
-|             | `env`        | 从环境变量获取 Flag                | `"GZCTF_FLAG"`                                               |
-|             | `file`       | 从文件获取 Flag                  | `"/flag"`                                                    |
-|             | `static_str` | 静态字符串作为 Flag                | `"flag{neko_quiz_static_flag}"`                              |
-| `message`   | -            | 返回消息配置                      | (见下方详细说明)                                                    |
-|             | `incorrect`  | 回答错误时的消息                    | `"没有全部答对，不能给你 FLAG 哦。"`                                      |
-|             | `correct`    | 回答正确时的消息，`$FLAG` 为 Flag 占位符 | `"🎉🎉🎉 $FLAG 🎉🎉🎉"`                                            |
+| 配置项         | 子项             | 说明                              | 示例                                                           |
+| ----------- | -------------- | ------------------------------- | ------------------------------------------------------------ |
+| `general`   | -              | 通用配置项                           | -                                                            |
+|             | `title`        | 问答标题                            | `"猫咪问答"`                                                     |
+|             | `return_score` | 是否返回分数                          | `true`                                                       |
+| `questions` | -              | 题目列表，可包含多个问题                    | -                                                            |
+|             | `text`         | 问题正文，支持 HTML 标签                 | `"想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"` |
+|             | `points`       | 问题分值                            | `20`                                                         |
+|             | `hint`         | 答题提示，支持 HTML 标签                 | `"格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"`                 |
+|             | `answers`      | 正确答案列表，支持多个答案                   | `[ "苏图-北馆书库", "苏图-设计图书馆" ]`                                  |
+| `flag`      | -              | Flag 获取方式配置                     | -                                                            |
+|             | `env`          | 从环境变量获取 Flag                    | `"FLAG"`                                                     |
+|             | `file`         | 从文件获取 Flag                      | `"/flag"`                                                    |
+|             | `static_str`   | 静态字符串作为 Flag                    | `"flag{neko_quiz_static_flag}"`                              |
+| `message`   | -              | 返回消息配置                          | -                                                            |
+|             | `incorrect`    | 答题未全部正确时的提示消息                   | `"没有全部答对，不能给你 FLAG 哦。"`                                      |
+|             | `correct`      | 答题全部正确时的提示消息，`$FLAG` 为 Flag 占位符 | `"🎉🎉🎉 $FLAG 🎉🎉🎉"`                                            |
 
-> \[!TIP\]
->
-> 注意事项：
->
-> 1. `questions` 为列表，可包含多个问题，每个问题都包含 `text`、`points`、`hint` 和 `answers` 字段
-> 1. `flag` 配置项按优先级顺序尝试：环境变量 > 文件 > 静态字符串
-> 1. 消息配置支持 HTML 标签，可用于自定义样式
+### Flag 获取优先级
+
+系统按以下优先级获取 Flag：
+
+1. 环境变量 (`env`)
+1. 文件 (`file`)
+1. 静态字符串 (`static_str`)
+
+### 注意事项
+
+1. 所有文本字段 (`text`、`hint`) 支持 HTML 标签
+1. `answers` 数组支持多个正确答案，用户答对其中任意一个即视为正确
+1. `return_score` 设置为 `true` 时会在响应中返回用户得分
+1. Flag 占位符 `$FLAG` 会在答题全部正确时被替换为实际的 Flag 值
 
 ## 部署
 
