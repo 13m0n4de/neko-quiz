@@ -7,3 +7,6 @@ Cargo.lock
 
 # trunk build
 dist/
+
+# tailwind css
+frontend/app.css
