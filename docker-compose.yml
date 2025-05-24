@@ -4,9 +4,9 @@ services:
   neko-quiz:
     build: .
     volumes:
-      - ./config.toml:/config.toml
-      # - ./flag:/flag
+    - ./config.toml:/config.toml
+    # - ./flag:/flag
     # environment:
-      # - FLAG=flag{13m0n4de}
+    # - FLAG=flag{13m0n4de}
     ports:
-      - "3000:3000"
+    - "3000:3000"

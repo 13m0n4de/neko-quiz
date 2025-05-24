@@ -1,27 +1,31 @@
-FROM rust:1.80.0-alpine AS builder
+FROM rustlang/rust:nightly-alpine AS builder
 
-WORKDIR /app
+RUN apk update && \
+    apk add --no-cache bash curl npm libc-dev binaryen
+
+RUN npm install -g sass
+
+RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/leptos-rs/cargo-leptos/releases/latest/download/cargo-leptos-installer.sh | sh
+
+# Add the WASM target
+RUN rustup target add wasm32-unknown-unknown
+
+WORKDIR /work
 COPY . .
 
-RUN set -xe && \
-    apk add --no-cache binaryen musl-dev curl && \
-    curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 && \
-    chmod +x tailwindcss-linux-x64 && cp tailwindcss-linux-x64 /usr/local/bin/tailwindcss && \
-    rustup target add wasm32-unknown-unknown && \
-    cargo install cargo-binstall && \
-    cargo binstall -y trunk
+RUN cargo leptos build --release -vv
 
-RUN cd frontend && \
-    CARGO_TARGET_DIR=../target-trunk trunk build --release && \
-    cd ..
-RUN cargo build --bin server --release
+FROM scratch AS runner
 
-FROM scratch
+WORKDIR /app
 
-COPY --from=builder /app/dist/ /dist
-COPY --from=builder /app/target/release/server /neko-quiz
-COPY --from=builder /app/config.toml /config.toml
+COPY --from=builder /work/target/release/neko-quiz /app/
+COPY --from=builder /work/target/site /app/site
+COPY --from=builder /work/config.toml /app/
 
-ENTRYPOINT ["/neko-quiz"]
+ENV RUST_LOG="info"
+ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
+ENV LEPTOS_SITE_ROOT=./site
+ENV QUIZ_CONFIG=./config.toml
 
-CMD ["-a", "0.0.0.0:3000"]
+CMD ["/app/neko-quiz"]
