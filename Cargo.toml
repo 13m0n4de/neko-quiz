@@ -35,6 +35,10 @@ ssr = [
     "leptos_router/ssr",
 ]
 
+[profile.bin-release]
+inherits = "release"
+strip = true
+
 # Defines a size-optimized profile for the WASM bundle in release mode
 [profile.wasm-release]
 inherits = "release"
@@ -95,6 +99,8 @@ bin-features = ["ssr"]
 #
 # Optional. Defaults to false.
 bin-default-features = false
+
+bin-profile-release = "bin-release"
 
 # The features to use when compiling the lib target
 #
