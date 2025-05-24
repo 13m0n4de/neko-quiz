@@ -4,7 +4,7 @@
 
 NekoQuiz 是一个 CTF 问答题通用框架，对 [USTC Hackergame 猫咪问答](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md) 的仿制。
 
-Rust 编写，前端使用 [Yew](https://yew.rs/) + [Tailwind CSS](https://tailwindcss.com/) ，后端使用 [Axum](https://github.com/tokio-rs/axum)。
+Rust 编写，使用 [Leptos](https://leptos.dev/) + [Axum](https://github.com/tokio-rs/axum) + [Tailwind CSS](https://tailwindcss.com/)。
 
 ![GitHub License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 ![GitHub Repo stars](https://img.shields.io/github/stars/13m0n4de/neko-quiz?style=for-the-badge)
@@ -24,18 +24,19 @@ Rust 编写，前端使用 [Yew](https://yew.rs/) + [Tailwind CSS](https://tailw
 
 ![demo](assets/demo.png)
 
-> \[!WARNING\]
+> [!WARNING]
 >
 > 本项目仍处于开发阶段，可能存在未知的安全隐患和功能缺陷，仅作为实验和学习用途，不建议直接应用于生产环境。
 
 ## 特性
 
+- 🚀 **服务端渲染（SSR）**：较好的首屏加载时间
 - 🛠 **灵活配置**：使用 TOML 文件轻松配置问题、答案和提示
 - 🔄 **配置热重载**：支持配置文件热重载，无需重启即可更新问题
 - 🔒 **多种 Flag 获取方式**：支持环境变量、文件读取和静态字符串
 - 🐳 **Docker 支持**：提供 Docker 镜像和 docker-compose 配置
 - 🌐 **跨平台**：提供预构建的多平台二进制文件
-- 💬 **自定义消息**：支持 HTML 格式的错误和成功消息
+- 💬 **自定义文本**：支持 HTML 格式的题目文本
 
 ## 安装
 
@@ -54,64 +55,67 @@ docker pull ghcr.io/13m0n4de/neko-quiz
 ### 从源代码构建
 
 1. 确保已安装 Rust 工具链
-1. 安装 [Trunk](https://github.com/thedodd/trunk)：
+2. 安装 [cargo-leptos](https://github.com/leptos-rs/cargo-leptos)：
     ```bash
-    cargo install trunk  # 从源码安装
-    cargo binstall trunk  # 或使用 cargo-binstall 安装二进制文件
+    cargo install cargo-leptos
     ```
-1. 克隆仓库：
+3. 克隆仓库：
     ```bash
     git clone https://github.com/13m0n4de/neko-quiz/
     ```
-1. 构建项目
+4. 构建项目
     ```bash
-    ./scripts/build.sh
+    cargo leptos build --release
     ```
 
-构建完成后，前端文件将输出在 `dist/` 目录，后端可执行文件位于 `target/release/server`。
+构建完成后，WASM 文件将输出在 `target/site/` 目录，可执行文件位于 `target/bin-release/neko-quiz`。
 
-> \[!NOTE\]
+> [!NOTE]
 >
-> 注意：从源代码构建需要安装额外的依赖，如 wasm32-unknown-unknown 目标。
+> 注意：从源代码构建需要安装 wasm32-unknown-unknown 目标：`rustup target add wasm32-unknown-unknown`
 
 ## 配置
 
 项目根目录有一份配置示例：[config.toml](config.toml)
 
 ```toml
+[general]
+title = "猫咪问答"
+return_score = true
+
 [[questions]]
 text = "想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"
 points = 20
 hint = "格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"
-answers = [ "苏图-北馆书库", "苏图-设计图书馆",]
+answers = ["苏图-北馆书库", "苏图-设计图书馆"]
 
 [[questions]]
-text = "「你们这些搞计算机的，就是喜欢卖弄学问，数个数还得从零开始」。其实编号从零开始是有道理的，一位计算机科学家还专门写过一篇简短的<b>手写稿</b>来解释，请问这个手写稿的编写日期是？"
+text = """「你们这些搞计算机的，就是喜欢卖弄学问，数个数还得从零开始」。
+其实编号从零开始是有道理的，一位计算机科学家还专门写过一篇简短的<b>手写稿</b>来解释，
+请问这个手写稿的编写日期是？
+"""
 points = 20
 hint = "格式：YYYY-MM-DD ，如 2024-02-05"
-answers = [ "1982-08-11",]
+answers = ["1982-08-11"]
 
 [[questions]]
 text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位 (bit)？"
 points = 20
 hint = "格式：整数，如 32"
-answers = [ "16",]
+answers = ["16"]
 
 [[questions]]
 text = "Hare 编程语言的官方风格指南中，行宽被限制为多少列？"
 points = 20
 hint = "格式：整数，如 120"
-answers = [ "80",]
+answers = ["80"]
 
 [[questions]]
-text = "在某次在线学术会议上，展示了一种通过声学侧信道推断 VoIP 呼叫来源的攻击手段，请问这个会议的名称是？"
+text = """在某次在线学术会议上，展示了一种通过声学侧信道推断 VoIP 呼叫来源的攻击手段，
+请问这个会议的名称是？"""
 points = 20
 hint = "格式：会议名称 + 年份，以空格分割，如 ECOOP 2024"
-answers = [ "ACM WiSec 2021", "WiSec 2021",]
-
-[general]
-title = "猫咪问答"
-return_score = true
+answers = ["ACM WiSec 2021", "WiSec 2021"]
 
 [flag]
 env = "FLAG"
@@ -123,38 +127,39 @@ incorrect = "没有全部答对，不能给你 FLAG 哦。"
 correct = "🎉🎉🎉 $FLAG 🎉🎉🎉"
 ```
 
-| 配置项         | 子项             | 说明                              | 示例                                                           |
-| ----------- | -------------- | ------------------------------- | ------------------------------------------------------------ |
-| `general`   | -              | 通用配置项                           | -                                                            |
-|             | `title`        | 问答标题                            | `"猫咪问答"`                                                     |
-|             | `return_score` | 是否返回分数                          | `true`                                                       |
-| `questions` | -              | 题目列表，可包含多个问题                    | -                                                            |
-|             | `text`         | 问题正文，支持 HTML 标签                 | `"想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"` |
-|             | `points`       | 问题分值                            | `20`                                                         |
-|             | `hint`         | 答题提示，支持 HTML 标签                 | `"格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"`                 |
-|             | `answers`      | 正确答案列表，支持多个答案                   | `[ "苏图-北馆书库", "苏图-设计图书馆" ]`                                  |
-| `flag`      | -              | Flag 获取方式配置                     | -                                                            |
-|             | `env`          | 从环境变量获取 Flag                    | `"FLAG"`                                                     |
-|             | `file`         | 从文件获取 Flag                      | `"/flag"`                                                    |
-|             | `static_str`   | 静态字符串作为 Flag                    | `"flag{neko_quiz_static_flag}"`                              |
-| `message`   | -              | 返回消息配置                          | -                                                            |
-|             | `incorrect`    | 答题未全部正确时的提示消息                   | `"没有全部答对，不能给你 FLAG 哦。"`                                      |
-|             | `correct`      | 答题全部正确时的提示消息，`$FLAG` 为 Flag 占位符 | `"🎉🎉🎉 $FLAG 🎉🎉🎉"`                                            |
+| 配置项      | 子项           | 说明                                             | 示例                                                                                   |
+| ----------- | -------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `general`   | -              | 通用配置项                                       | -                                                                                      |
+|             | `title`        | 问答标题                                         | `"猫咪问答"`                                                                           |
+|             | `return_score` | 是否返回分数                                     | `true`                                                                                 |
+| `questions` | -              | 题目列表，可包含多个问题                         | -                                                                                      |
+|             | `text`         | 问题正文，支持 HTML 标签                         | `"想要在苏州图书馆借阅 <i>Engineering a Compiler</i>，需要到哪个分馆的哪个馆藏地点？"` |
+|             | `points`       | 问题分值                                         | `20`                                                                                   |
+|             | `hint`         | 答题提示，支持 HTML 标签                         | `"格式：所在分馆-所在馆藏地点，例如 中心馆-西文书库。（如有多个，任意一个即可）"`      |
+|             | `answers`      | 正确答案列表，支持多个答案                       | `[ "苏图-北馆书库", "苏图-设计图书馆" ]`                                               |
+| `flag`      | -              | Flag 获取方式配置                                | -                                                                                      |
+|             | `env`          | 从环境变量获取 Flag                              | `"FLAG"`                                                                               |
+|             | `file`         | 从文件获取 Flag                                  | `"/flag"`                                                                              |
+|             | `static_str`   | 静态字符串作为 Flag                              | `"flag{neko_quiz_static_flag}"`                                                        |
+| `message`   | -              | 返回消息配置                                     | -                                                                                      |
+|             | `incorrect`    | 答题未全部正确时的提示消息                       | `"没有全部答对，不能给你 FLAG 哦。"`                                                   |
+|             | `correct`      | 答题全部正确时的提示消息，`$FLAG` 为 Flag 占位符 | `"🎉🎉🎉 $FLAG 🎉🎉🎉"`                                                                |
 
 ### Flag 获取优先级
 
 系统按以下优先级获取 Flag：
 
 1. 环境变量 (`env`)
-1. 文件 (`file`)
-1. 静态字符串 (`static_str`)
+2. 文件 (`file`)
+3. 静态字符串 (`static_str`)
 
 ### 注意事项
 
-1. 所有文本字段 (`text`、`hint`) 支持 HTML 标签
-1. `answers` 数组支持多个正确答案，用户答对其中任意一个即视为正确
-1. `return_score` 设置为 `true` 时会在响应中返回用户得分
-1. Flag 占位符 `$FLAG` 会在答题全部正确时被替换为实际的 Flag 值
+1. 题目文本字段（`text`、`hint`）支持 HTML 标签
+2. 提示信息（`message`）不支持 HTML 标签，因为错误信息可能受到用户控制
+3. `answers` 数组支持多个正确答案，用户答对其中任意一个即视为正确
+4. `return_score` 设置为 `true` 时会在响应中返回用户得分
+5. Flag 占位符 `$FLAG` 会在答题全部正确时被替换为实际的 Flag 值
 
 ## 部署
 
@@ -168,7 +173,7 @@ NekoQuiz 支持多种部署方式，默认端口为 `3000`。请根据您的需�
     ```bash
     tar xvf x86_64-unknown-linux-musl.tar.gz
     ```
-1. 运行可执行文件：
+2. 运行可执行文件：
     ```bash
     ./neko-quiz
     ```
@@ -177,7 +182,7 @@ NekoQuiz 支持多种部署方式，默认端口为 `3000`。请根据您的需�
     ./neko-quiz -a 0.0.0.0:3000
     ```
 
-> \[!NOTE\]
+> [!NOTE]
 >
 > 提示：使用 -h 或 --help 参数查看更多选项，或参考[帮助](#%E5%B8%AE%E5%8A%A9)章节。
 
@@ -220,20 +225,6 @@ NekoQuiz 支持多种部署方式，默认端口为 `3000`。请根据您的需�
     docker run -d -p 3000:3000 -v ./config.toml:/config.toml neko-quiz
     ```
 
-## 帮助
-
-### 命令行参数
-
-运行 `neko-quiz --help` 可以查看完整的命令行选项。以下是主要参数的概览：
-
-| 参数             | 简写   | 默认值              | 描述        |
-| -------------- | ---- | ---------------- | --------- |
-| `--log`        | `-l` | `debug`          | 设置日志级别    |
-| `--addr`       | `-a` | `127.0.0.1:3000` | 设置监听地址和端口 |
-| `--config`     | `-c` | `config.toml`    | 指定配置文件路径  |
-| `--static-dir` |      | `./dist`         | 指定静态文件目录  |
-| `--help`       | `-h` |                  | 显示帮助信息    |
-
 ## 使用案例
 
 - [SVUCTF/SVUCTF-SPRING-2024 猫咪问答](https://github.com/SVUCTF/SVUCTF-SPRING-2024/tree/main/challenges/misc/neko_quiz)
@@ -246,4 +237,3 @@ NekoQuiz 支持多种部署方式，默认端口为 `3000`。请根据您的需�
 ## 相关项目
 
 - [USTC-Hackergame 猫咪小测](https://github.com/USTC-Hackergame/hackergame2023-writeups/blob/master/official/%E7%8C%AB%E5%92%AA%E5%B0%8F%E6%B5%8B/README.md)
-- [rksm/axum-yew-setup](https://github.com/rksm/axum-yew-setup/)
