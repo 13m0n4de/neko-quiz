@@ -20,8 +20,6 @@ Rust 编写，使用 [Leptos](https://leptos.dev/) + [Axum](https://github.com/t
 
 ## 预览
 
-在线预览：[https://neko-quiz.shuttleapp.rs/](https://neko-quiz.shuttleapp.rs/)
-
 ![demo](assets/demo.png)
 
 > [!WARNING]
@@ -30,7 +28,7 @@ Rust 编写，使用 [Leptos](https://leptos.dev/) + [Axum](https://github.com/t
 
 ## 特性
 
-- 🚀 **服务端渲染（SSR）**：较好的首屏加载时间
+- 🚀 **服务端渲染（SSR）**：快速的首屏加载
 - 🛠 **灵活配置**：使用 TOML 文件轻松配置问题、答案和提示
 - 🔄 **配置热重载**：支持配置文件热重载，无需重启即可更新问题
 - 🔒 **多种 Flag 获取方式**：支持环境变量、文件读取和静态字符串
@@ -46,7 +44,7 @@ Rust 编写，使用 [Leptos](https://leptos.dev/) + [Axum](https://github.com/t
 
 ### Docker 镜像
 
-```bash
+```
 docker pull ghcr.io/13m0n4de/neko-quiz
 ```
 
@@ -56,15 +54,15 @@ docker pull ghcr.io/13m0n4de/neko-quiz
 
 1. 确保已安装 Rust 工具链
 2. 安装 [cargo-leptos](https://github.com/leptos-rs/cargo-leptos)：
-    ```bash
+    ```
     cargo install cargo-leptos
     ```
 3. 克隆仓库：
-    ```bash
+    ```
     git clone https://github.com/13m0n4de/neko-quiz/
     ```
 4. 构建项目
-    ```bash
+    ```
     cargo leptos build --release
     ```
 
@@ -163,67 +161,92 @@ correct = "🎉🎉🎉 $FLAG 🎉🎉🎉"
 
 ## 部署
 
-NekoQuiz 支持多种部署方式，默认端口为 `3000`。请根据您的需求选择合适的部署方法。
+NekoQuiz 支持多种部署方式，默认端口为 `3000`。可以根据您的需求选择合适的部署方法。
+
+运行参数通过环境变量进行配置，详细说明可见[帮助](#%E5%B8%AE%E5%8A%A9)。
 
 ### 预构建二进制文件
 
 如果从是 [Releases](https://github.com/13m0n4de/neko-quiz/releases) 下载的压缩包，解压所有文件到同一目录并运行 `neko-quiz` 即可。
 
 1. 解压下载的压缩包：
-    ```bash
+    ```
     tar xvf x86_64-unknown-linux-musl.tar.gz
     ```
 2. 运行可执行文件：
-    ```bash
+    ```
     ./neko-quiz
     ```
-    或指定地址和端口：
-    ```bash
-    ./neko-quiz -a 0.0.0.0:3000
+    指定地址和端口：
     ```
-
-> [!NOTE]
->
-> 提示：使用 -h 或 --help 参数查看更多选项，或参考[帮助](#%E5%B8%AE%E5%8A%A9)章节。
+    LEPTOS_SITE_ADDR="0.0.0.0:8080" ./neko-quiz
+    ```
+    指定配置文件：
+    ```
+    QUIZ_CONFIG="./my_config.toml" ./neko-quiz
+    ```
 
 ### Docker 镜像
 
 确保挂载的配置文件 `config.toml` 路径正确。
 
 - 使用环境变量作为 Flag：
-    ```bash
+    ```
     docker run -d --rm -p 3000:3000 \
-        -v ./config.toml:/config.toml \
-        -e GZCTF_FLAG='flag{example}' \
+        -v ./config.toml:/app/config.toml \
+        -e FLAG='flag{example}' \
         --name neko-quiz ghcr.io/13m0n4de/neko-quiz
     ```
 - 使用文件提供 Flag：
-    ```bash
+    ```
     docker run -d --rm -p 3000:3000 \
-        -v ./config.toml:/config.toml \
+        -v ./config.toml:/app/config.toml \
         -v ./flag:/flag \
         --name neko-quiz ghcr.io/13m0n4de/neko-quiz
     ```
 - 使用 docker-compose，编辑 docker-compose.yml 文件配置环境变量和文件挂载，然后运行：
-    ```bash
+    ```
     docker-compose up -d
     ```
 
 ### 本地开发部署
 
-- 编译并启动 Dev 版本（代码修改自动重新编译）：
-    ```bash
-    ./scripts/dev.sh
+- 开发模式（代码修改自动重新编译和热重载）：
     ```
-- 编译并启动 Release 版本：
-    ```bash
-    ./scripts/prod.sh
+    cargo leptos watch
+    ```
+- 构建 Release 版本：
+    ```
+    cargo leptos build --release
+    ```
+    构建完成后运行：
+    ```
+    ./target/bin-release/neko-quiz
     ```
 - 或构建本地 Docker 镜像：
-    ```bash
-    docker build . -t neko-quiz
-    docker run -d -p 3000:3000 -v ./config.toml:/config.toml neko-quiz
     ```
+    docker build . -t neko-quiz
+    ```
+    ```
+    docker run -d --rm -p 3000:3000 \
+        -v ./config.toml:/app/config.toml \
+        -e FLAG='flag{example}' neko-quiz
+    ```
+
+## 帮助
+
+### 环境变量配置
+
+可以通过以下环境变量来配置运行参数：
+
+| 环境变量           | 默认值          | 描述               |
+| ------------------ | --------------- | ------------------ |
+| `RUST_LOG`         | `info`          | 设置日志级别       |
+| `LEPTOS_SITE_ADDR` | `0.0.0.0:3000`  | 设置监听地址和端口 |
+| `LEPTOS_SITE_ROOT` | `./site`        | 指定站点根目录     |
+| `QUIZ_CONFIG`      | `./config.toml` | 指定配置文件路径   |
+
+更多 Leptos 相关环境变量，可以参考 [cargo-leptos 对环境变量的说明](https://github.com/leptos-rs/cargo-leptos#environment-variables)。
 
 ## 使用案例
 
