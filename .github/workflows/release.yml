@@ -48,7 +48,7 @@ jobs:
           cp target/bin-release/neko-quiz release/
         fi
 
-        cp -r target/site release/
+        cp -r site release/
         cp config.toml release/
 
     - name: Compress
