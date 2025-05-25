@@ -52,17 +52,13 @@ jobs:
         cp config.toml release/
 
     - name: Compress
-      uses: a7ul/tar-action@v1.1.0
-      with:
-        command: c
-        cwd: release
-        files: |
-          .
-        outPath: neko-quiz_${{ matrix.job.target }}.tar.gz
+      shell: bash
+      run: |
+        cd release
+        tar -czf ../neko-quiz-${{ matrix.job.target }}.tar.gz *
 
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
         files: |
-          neko-quiz_${{ matrix.job.target }}.tar.gz
-        generate_release_notes: true
+          neko-quiz-${{ matrix.job.target }}.tar.gz
