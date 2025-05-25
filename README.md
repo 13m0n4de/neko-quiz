@@ -20,6 +20,8 @@ Rust 编写，使用 [Leptos](https://leptos.dev/) + [Axum](https://github.com/t
 
 ## 预览
 
+在线预览：[neko-quiz.onrender.com](https://neko-quiz.onrender.com)
+
 ![demo](assets/demo.png)
 
 > [!WARNING]
@@ -97,7 +99,7 @@ hint = "格式：YYYY-MM-DD ，如 2024-02-05"
 answers = ["1982-08-11"]
 
 [[questions]]
-text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位 (bit)？"
+text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位（bit）？"
 points = 20
 hint = "格式：整数，如 32"
 answers = ["16"]
@@ -147,9 +149,9 @@ correct = "🎉🎉🎉 $FLAG 🎉🎉🎉"
 
 系统按以下优先级获取 Flag：
 
-1. 环境变量 (`env`)
-2. 文件 (`file`)
-3. 静态字符串 (`static_str`)
+1. 环境变量（`env`）
+2. 文件（`file`）
+3. 静态字符串（`static_str`）
 
 ### 注意事项
 
