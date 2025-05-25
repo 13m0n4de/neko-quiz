@@ -68,7 +68,7 @@ docker pull ghcr.io/13m0n4de/neko-quiz
     cargo leptos build --release
     ```
 
-构建完成后，WASM 文件将输出在 `target/site/` 目录，可执行文件位于 `target/bin-release/neko-quiz`。
+构建完成后，前端文件将输出在 `site/` 目录，可执行文件位于 `target/bin-release/neko-quiz`。
 
 > [!NOTE]
 >
@@ -173,7 +173,7 @@ NekoQuiz 支持多种部署方式，默认端口为 `3000`。可以根据您的�
 
 1. 解压下载的压缩包：
     ```
-    tar xvf x86_64-unknown-linux-musl.tar.gz
+    tar xvf neko-quiz-linux.tar.gz
     ```
 2. 运行可执行文件：
     ```
