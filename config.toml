@@ -18,7 +18,7 @@ hint = "格式：YYYY-MM-DD ，如 2024-02-05"
 answers = ["1982-08-11"]
 
 [[questions]]
-text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位 (bit)？"
+text = "CVE-2023-45853 的修复补丁中，文件名长度被限制为多少位（bit）？"
 points = 20
 hint = "格式：整数，如 32"
 answers = ["16"]
