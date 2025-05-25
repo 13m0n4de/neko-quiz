@@ -20,7 +20,7 @@ FROM scratch AS runner
 WORKDIR /app
 
 COPY --from=builder /work/target/bin-release/neko-quiz /app/
-COPY --from=builder /work/target/site /app/site
+COPY --from=builder /work/site /app/site
 COPY --from=builder /work/config.toml /app/
 
 ENV RUST_LOG="info"
