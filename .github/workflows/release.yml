@@ -1,0 +1,68 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+    - v*
+
+jobs:
+  build:
+    runs-on: ${{ matrix.job.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+        - {os: ubuntu-latest, target: linux}
+        - {os: macos-latest, target: macos}
+        - {os: windows-latest, target: windows,}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: nightly
+        targets: wasm32-unknown-unknown
+
+    - name: Install cargo-leptos
+      run: cargo install cargo-leptos
+
+    - name: Build with cargo-leptos
+      shell: bash
+      run: |
+        cargo leptos build --release
+
+    - name: Prepare artifacts
+      shell: bash
+      run: |
+        mkdir -p release
+
+        if [ "${{ matrix.job.os }}" = "windows-latest" ]; then
+          cp target/bin-release/neko-quiz.exe release/
+        else
+          cp target/bin-release/neko-quiz release/
+        fi
+
+        cp -r target/site release/
+        cp config.toml release/
+
+    - name: Compress
+      uses: a7ul/tar-action@v1.1.0
+      with:
+        command: c
+        cwd: release
+        files: |
+          .
+        outPath: neko-quiz_${{ matrix.job.target }}.tar.gz
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          neko-quiz_${{ matrix.job.target }}.tar.gz
+        generate_release_notes: true
