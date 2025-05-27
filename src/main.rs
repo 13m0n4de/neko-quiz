@@ -1,4 +1,6 @@
 #[cfg(feature = "ssr")]
+use leptos::logging::{error, log};
+#[cfg(feature = "ssr")]
 use neko_quiz::models::config::Config;
 #[cfg(feature = "ssr")]
 use thiserror::Error;
@@ -14,6 +16,9 @@ enum AppError {
 
     #[error("Failed to bind to address {addr}")]
     Bind { addr: std::net::SocketAddr },
+
+    #[error("Leptos configuration failed: {0}")]
+    LeptosConfig(String),
 }
 
 #[cfg(feature = "ssr")]
@@ -31,22 +36,35 @@ async fn load_config(config_path: &str) -> AppResult<Config> {
 
 #[cfg(feature = "ssr")]
 #[tokio::main]
-async fn main() -> AppResult<()> {
+async fn main() {
+    if let Err(e) = run().await {
+        error!("{e}")
+    }
+}
+
+#[cfg(feature = "ssr")]
+async fn run() -> AppResult<()> {
     use axum::Router;
-    use leptos::logging::log;
     use leptos::prelude::{provide_context, *};
     use leptos_axum::{LeptosRoutes, generate_route_list};
+    use std::sync::Arc;
+
     use neko_quiz::app::{App, shell};
 
-    let conf = get_configuration(None).unwrap();
+    let conf = get_configuration(None).map_err(|e| AppError::LeptosConfig(e.to_string()))?;
     let addr = conf.leptos_options.site_addr;
-    let leptos_options = conf.leptos_options;
+    let leptos_options = {
+        let mut opts = conf.leptos_options;
+        opts.site_root = std::env::var("LEPTOS_SITE_ROOT")
+            .unwrap_or_else(|_| "site/".to_string())
+            .into();
+        opts
+    };
 
     let routes = generate_route_list(App);
 
-    use std::sync::Arc;
-
-    let quiz_config_path = std::env::var("QUIZ_CONFIG").unwrap_or("config.toml".to_string());
+    let quiz_config_path =
+        std::env::var("QUIZ_CONFIG").unwrap_or_else(|_| "config.toml".to_string());
     let config = Arc::new(load_config(&quiz_config_path).await?);
 
     let app = Router::new()
