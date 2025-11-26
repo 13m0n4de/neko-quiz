@@ -6,7 +6,7 @@ use std::collections::HashMap;
 #[cfg(feature = "ssr")]
 use crate::models::config::Config;
 #[cfg(feature = "ssr")]
-use std::{fs::File, io::Read, sync::Arc};
+use std::sync::Arc;
 
 #[server(GetQuiz, prefix = "/api", endpoint = "quiz", input = GetUrl)]
 pub async fn get_quiz() -> Result<Quiz, ServerFnError> {
@@ -36,11 +36,8 @@ pub async fn create_submission(
 
     let flag = if let Ok(flag) = std::env::var(&config.flag.env) {
         flag
-    } else if let Ok(mut file) = File::open(&config.flag.file) {
-        let mut flag = String::new();
-        file.read_to_string(&mut flag)
-            .expect("Unable to read flag file");
-        flag
+    } else if let Ok(flag) = tokio::fs::read_to_string(&config.flag.file).await {
+        flag.trim().to_string()
     } else {
         config.flag.static_str.clone()
     };
